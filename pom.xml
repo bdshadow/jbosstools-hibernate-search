@@ -6,19 +6,18 @@
 		<artifactId>parent</artifactId>
 		<version>4.3.0.Beta1-SNAPSHOT</version>
 	</parent>
-	<groupId>hibernatesearchtools</groupId>
-	<artifactId>org.jboss.tools.hibernate.search</artifactId>
+	<artifactId>hibernatesearchtools</artifactId>
+	<name>jbosstools-hibernate-search</name>
 	<version>1.0.0-SNAPSHOT</version>
-	<packaging>eclipse-plugin</packaging>
+	<packaging>pom</packaging>
 	
 	<properties>
 		<tycho.scmUrl>scm:git:https://github.com/jbosstools/jbosstools-hibernate.git</tycho.scmUrl>
-		
-		<hibernate-tools.version>4.3.1.CR1</hibernate-tools.version>
-		<hibernate.search.version>5.3.0.Beta1</hibernate.search.version>
-		<commons-logging.version>1.1.1</commons-logging.version>
-		<jboss-logging.version>3.1.3.GA</jboss-logging.version>
 	</properties>
+	
+	<modules>
+		<module>plugins</module>
+	</modules>
 
 	<repositories>
 		<!-- To resolve parent artifact -->
@@ -40,58 +39,4 @@
 			<url>${jbosstools-base-site}</url>
 		</repository>
 	</repositories>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>get-libs</id>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<phase>generate-resources</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<artifactItems>
-						<artifactItem>
-							<groupId>org.hibernate</groupId>
-							<artifactId>hibernate-tools</artifactId>
-							<version>${hibernate-tools.version}</version>
-						</artifactItem>
-						<artifactItem>
-							<groupId>org.hibernate</groupId>
-							<artifactId>hibernate-search</artifactId>
-							<version>${hibernate.search.version}</version>
-						</artifactItem>
-						<artifactItem>
-							<groupId>commons-logging</groupId>
-							<artifactId>commons-logging</artifactId>
-							<version>${commons-logging.version}</version>
-						</artifactItem>
-						<artifactItem>
-							<groupId>org.jboss.logging</groupId>
-							<artifactId>jboss-logging</artifactId>
-							<version>${jboss-logging.version}</version>
-						</artifactItem>
-					</artifactItems>
-					<skip>false</skip>
-					<outputDirectory>${basedir}/lib</outputDirectory>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>${basedir}/lib</directory>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>

@@ -2,48 +2,33 @@ package org.jboss.tools.hibernate.search.actions;
 
 import java.util.Iterator;
 
-import org.eclipse.jface.viewers.StructuredViewer;
-import org.hibernate.console.ConsoleConfiguration;
+import org.eclipse.core.commands.AbstractHandler;
 import org.hibernate.console.execution.ExecutionContext.Command;
-import org.hibernate.eclipse.console.actions.ConsoleConfigReadyUseBaseAction;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.hibernate.console.ConsoleConfiguration;
 import org.jboss.tools.hibernate.runtime.spi.IConfiguration;
 import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
 
-public class IndexRebuildAction extends ConsoleConfigReadyUseBaseAction {
-	
-	public static final String INDEXREBUILD_ACTIONID = "actionid.indexrebuild";
-	
-	public IndexRebuildAction() {
-		super("Run Index Rebuild");
-		setId(INDEXREBUILD_ACTIONID);
-	}
-
-	public IndexRebuildAction(String text) {
-		super(text);
-		setId(INDEXREBUILD_ACTIONID);
-		init(null);
-	}
-	
-	/**
-	 * @param selectionProvider
-	 */
-	public IndexRebuildAction(StructuredViewer selectionProvider) {
-		super("Run Index Rebuild");
-		setId(INDEXREBUILD_ACTIONID);
-		init(selectionProvider);
-	}
+public class IndexRebuildAction extends AbstractHandler {
 
 	@Override
-	protected void doRun() {
-		for (Iterator<?> i = getSelectedNonResources().iterator(); i.hasNext();) {
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		ISelection sel = HandlerUtil.getActiveMenuSelection(event);
+		IStructuredSelection selection = (IStructuredSelection) sel;
+
+		for (Iterator<?> i = selection.iterator(); i.hasNext();) {
 			Object node = i.next();
 			if (!(node instanceof ConsoleConfiguration)) {
 				continue;
 			}
 			final ConsoleConfiguration config = (ConsoleConfiguration) node;
 			try {
-				config.execute( new Command() {
+				config.execute(new Command() {
 					public Object execute() {
 						final IConfiguration cfg = config.getConfiguration();
 						if (cfg == null) {
@@ -55,9 +40,10 @@ public class IndexRebuildAction extends ConsoleConfigReadyUseBaseAction {
 					}
 				});
 			} catch (Exception he) {
-				
-			}
-		}
 
+			}
+
+		}
+		return null;
 	}
 }

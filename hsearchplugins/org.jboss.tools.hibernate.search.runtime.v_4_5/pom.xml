@@ -13,7 +13,7 @@
 	<packaging>eclipse-plugin</packaging>
 	
 	<properties>
-		<hibernate.search.version>4.5.3.Final</hibernate.search.version>
+		<hibernate.search.version>5.0.1.Final</hibernate.search.version>
 		<coverage.filter>org.jboss.tools.hibernate.proxy*</coverage.filter>
 		<emma.instrument.bundles>org.jboss.tools.hibernate.proxy</emma.instrument.bundles>
 	</properties>
@@ -60,6 +60,36 @@
 							<groupId>org.hibernate</groupId>
 							<artifactId>hibernate-search-orm</artifactId>
 							<version>${hibernate.search.version}</version>
+						</artifactItem>
+						<artifactItem>
+							<groupId>org.hibernate</groupId>
+							<artifactId>hibernate-search-engine</artifactId>
+							<version>5.0.1.Final</version>
+						</artifactItem>
+						<artifactItem>
+							<groupId>org.hibernate.common</groupId>
+							<artifactId>hibernate-commons-annotations</artifactId>
+							<version>4.0.5.Final</version>
+						</artifactItem>
+						<artifactItem>
+							<groupId>org.apache.lucene</groupId>
+							<artifactId>lucene-core</artifactId>
+							<version>4.10.3</version>
+						</artifactItem>
+						<artifactItem>
+							<groupId>org.apache.lucene</groupId>
+							<artifactId>lucene-analyzers-common</artifactId>
+							<version>4.10.3</version>
+						</artifactItem>
+						<artifactItem>
+							<groupId>org.apache.lucene</groupId>
+							<artifactId>lucene-facet</artifactId>
+							<version>4.10.3</version>
+						</artifactItem>
+						<artifactItem>
+							<groupId>org.apache.lucene</groupId>
+							<artifactId>lucene-queries</artifactId>
+							<version>4.10.3</version>
 						</artifactItem>
 					</artifactItems>
 					<skip>false</skip>

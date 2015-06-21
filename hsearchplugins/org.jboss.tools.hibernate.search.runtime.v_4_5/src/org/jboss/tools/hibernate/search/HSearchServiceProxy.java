@@ -14,12 +14,11 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 	public void newIndexRebuild(ISessionFactory sessionFactory) {
 		try {
 			SessionFactoryImpl factory = (SessionFactoryImpl) ((IFacade) sessionFactory).getTarget();
-			FullTextSession fullTextSession = Search.getFullTextSession(factory.getCurrentSession());
+			FullTextSession fullTextSession = Search.getFullTextSession(factory.openSession());
 			fullTextSession.createIndexer().startAndWait();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			e.printStackTrace();	}
 	}
 	
 	

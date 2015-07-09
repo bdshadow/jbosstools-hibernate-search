@@ -11,6 +11,11 @@
                label="Index Rebuild"
                style="push">
          </command>
+         <command
+               commandId="org.jboss.tools.hibernate.search.actions.openanalyzers"
+               label="Try analyzers"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -20,6 +25,27 @@
             id="org.jboss.tools.hibernate.search.actions.indexrebuild"
             name="IndexRebuildAction">
       </command>
+      <command
+            defaultHandler="org.jboss.tools.hibernate.search.actions.AnalyzersScratchpadAction"
+            id="org.jboss.tools.hibernate.search.actions.openanalyzers"
+            name="OpenAnalyzersAction">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditor"
+            default="false"
+            id="org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditor"
+            name="Analyzers Test">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditorInputFactory"
+            id="org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditorInputFactory">
+      </factory>
    </extension>
  <!--  <extension
          point="org.hibernate.eclipse.console.actions">

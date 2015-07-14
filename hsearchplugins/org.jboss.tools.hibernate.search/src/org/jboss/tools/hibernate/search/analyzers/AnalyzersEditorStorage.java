@@ -10,12 +10,12 @@ import java.io.Reader;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.IPath;
 
-public class AnalyzersTestEditorStorage implements IStorage {
+public class AnalyzersEditorStorage implements IStorage {
 
 	private String contents;
 	private String nameLabel;
 
-	public AnalyzersTestEditorStorage(String name, String source) {
+	public AnalyzersEditorStorage(String name, String source) {
 		setName(name);
 		setContents(source);
 	}

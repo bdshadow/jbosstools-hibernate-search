@@ -7,14 +7,14 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 
-public class AnalyzersTestEditorInput implements IStorageEditorInput, IPersistableElement {
+public class AnalyzersEditorInput implements IStorageEditorInput, IPersistableElement {
 
 	/** The name of the editor input. */
 	private String name;
 	/** The storage object used by this editor input. */
 	private IStorage storage;
 
-	public AnalyzersTestEditorInput(IStorage storage) {
+	public AnalyzersEditorInput(IStorage storage) {
 		if (storage == null) {
 			throw new IllegalArgumentException();
         }
@@ -57,12 +57,12 @@ public class AnalyzersTestEditorInput implements IStorageEditorInput, IPersistab
 
 	@Override
 	public void saveState(IMemento memento) {
-		AnalyzersTestEditorInputFactory.saveState(memento, this);
+		AnalyzersEditorInputFactory.saveState(memento, this);
 	}
 
 	@Override
 	public String getFactoryId() {
-		return AnalyzersTestEditorInputFactory.ID_FACTORY;
+		return AnalyzersEditorInputFactory.ID_FACTORY;
 	}
 
 	@Override

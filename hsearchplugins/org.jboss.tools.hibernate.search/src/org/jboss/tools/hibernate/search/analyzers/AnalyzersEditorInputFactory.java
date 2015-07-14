@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 
-public class AnalyzersTestEditorInputFactory implements IElementFactory {
+public class AnalyzersEditorInputFactory implements IElementFactory {
 	
 	public final static String ID_FACTORY =  "org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditorInputFactory"; //$NON-NLS-1$
     public final static String ID_STORAGE_EDITOR_INPUT = "AnalyzersTestEditorInput"; //$NON-NLS-1$
@@ -19,13 +19,13 @@ public class AnalyzersTestEditorInputFactory implements IElementFactory {
         // Create a Storage object from the memento.
         String contentName = memento.getString( KEY_STORAGE_NAME );
         String contentString = memento.getString( KEY_STORAGE_CONTENT );
-        AnalyzersTestEditorStorage storage = new AnalyzersTestEditorStorage(contentName, contentString );
+        AnalyzersEditorStorage storage = new AnalyzersEditorStorage(contentName, contentString );
         
-        AnalyzersTestEditorInput analyzersInput = new AnalyzersTestEditorInput( storage );
+        AnalyzersEditorInput analyzersInput = new AnalyzersEditorInput( storage );
         return analyzersInput; 
 	}
 	
-	public static void saveState(IMemento memento, AnalyzersTestEditorInput input) {
+	public static void saveState(IMemento memento, AnalyzersEditorInput input) {
         // Save the editor input type.
         memento.putString( KEY_EDITOR_INPUT_TYPE, ID_STORAGE_EDITOR_INPUT );
         
@@ -34,8 +34,8 @@ public class AnalyzersTestEditorInputFactory implements IElementFactory {
         IStorage storage = input.getStorage();
         if (storage != null) {
             storageName = storage.getName();            
-            if (storage instanceof AnalyzersTestEditorStorage) {
-                AnalyzersTestEditorStorage sqlEditorStorage = (AnalyzersTestEditorStorage) storage;
+            if (storage instanceof AnalyzersEditorStorage) {
+                AnalyzersEditorStorage sqlEditorStorage = (AnalyzersEditorStorage) storage;
                 storageContent = sqlEditorStorage.getContentsString();
             }
         }

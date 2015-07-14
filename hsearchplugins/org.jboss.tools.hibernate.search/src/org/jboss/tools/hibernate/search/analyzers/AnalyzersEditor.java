@@ -4,26 +4,23 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.TextEvent;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.eclipse.console.AbstractQueryEditor;
-import org.hibernate.eclipse.console.HibernateConsoleMessages;
 import org.hibernate.eclipse.console.views.QueryPageTabView;
-import org.hibernate.eclipse.criteriaeditor.CriteriaEditorDocumentSetupParticipant;
-import org.hibernate.eclipse.hqleditor.HQLEditor;
 
 public class AnalyzersEditor extends AbstractQueryEditor {
 	
@@ -34,7 +31,7 @@ public class AnalyzersEditor extends AbstractQueryEditor {
 	}
 	
 	public void createPartControl(Composite parent) {
-		parent.setLayout(new GridLayout(1, false));
+		parent.setLayout(new GridLayout(1,false));
 		createToolbar(parent);
 		
 		super.createPartControl( parent );
@@ -46,6 +43,9 @@ public class AnalyzersEditor extends AbstractQueryEditor {
 					updateExecButton();
 				}});
 		}
+		
+		Control control = parent.getChildren()[1];
+		control.setLayoutData( new GridData( GridData.FILL_BOTH ) );
 		
 		// the following is needed to make sure the editor area gets focus when editing after query execution
 	    // TODO: find a better way since this is triggered on every mouse click and key stroke in the editor area

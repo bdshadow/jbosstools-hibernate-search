@@ -15,4 +15,14 @@ It is one more action in ConfigurationsViewActionGroup. The detailed interface s
 I think of it as also one more action in ConfigurationsViewActionGroup . It must open a new Editor. The interface will be very similar to HQL Editor. But the dropdown list will show Analyzers. Then you put some text into the editor, Run the chosen analyzer and get a result in a separate view.
 * A tool which combines the two above a bit: it shows which Analyzer is used for the field by default - but also allow to override it by picking an option from the list - and then highlight which documents from those in the index have matching.
 
-
+# Building and running the project
+In order to build and run the project, firtly, some steps are need to be done:
+1. Set target platform. [Here](https://github.com/jbosstools/jbosstools-devdoc/blob/master/building/target_platforms/target_platforms_for_consumers.adoc) you can read information about it. Shortly:
+  a) Get the code of target platform: [https://github.com/jbosstools/jbosstools-target-platforms] (https://github.com/jbosstools/jbosstools-target-platforms)
+  b) Checkout the branch you need (currently, I use 4.50.x)
+  c) Build the target platform
+  d) Open jbosstools-multiple.target in Eclipse and click "Set as Target Platform"
+2. Hibernate-Search tools need Hibernate tools to be in Eclipse workspace. In its turn, Hibernate tools need [jbosstools-base (common module)] (https://github.com/jbosstools/jbosstools-base/tree/master/common) in workspace. That's why you can get the code and import them as maven projects step-by-step, or watch the video, attached to https://issues.jboss.org/browse/JBIDE-19590 to import everything automatically.
+3. Get the code of Hibernate Search tools and import it into the eclipse workspace
+4. Build jbosstools-base (common) module, then build Hibernate tools, and olny after that try "clean verify" on the current project (Hibernate Search Tools), add skip tests if you want to build everything quicker.
+5. Right-click on Hibernate-Search tools project -> Run as... -> Eclipse Application. It must start a new Eclipse instance with working HSearch plugin.

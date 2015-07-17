@@ -1,30 +1,34 @@
 package org.jboss.tools.hibernate.search.analyzers;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.TextEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.eclipse.console.AbstractQueryEditor;
+import org.hibernate.eclipse.console.ComboContribution;
 import org.hibernate.eclipse.console.views.QueryPageTabView;
 
 public class AnalyzersEditor extends AbstractQueryEditor {
 	
 	private AnalyzersEditorDocumentSetupParticipant docSetupParticipant;
+	private ToolBarManager analyzersTbm;
 	
 	public AnalyzersEditor() {
 		super();
@@ -32,10 +36,10 @@ public class AnalyzersEditor extends AbstractQueryEditor {
 	
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1,false));
+		
 		createToolbar(parent);
-		
+		//createAnalyzersToolbar(parent);
 		super.createPartControl( parent );
-		
 		if (getSourceViewer() != null ){
 			getSourceViewer().addTextListener(new ITextListener(){
 
@@ -100,6 +104,29 @@ public class AnalyzersEditor extends AbstractQueryEditor {
 		} catch (PartInitException e) {
 			// ignore
 		}
+	}
+	
+	protected void createAnalyzersToolbar(Composite parent) {
+		ToolBar bar = new ToolBar( parent, SWT.HORIZONTAL );
+		bar.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+		
+		analyzersTbm = new ToolBarManager( bar );
+		
+/*		ComboContribution cc = new ComboContribution() {
+
+			@Override
+			protected org.eclipse.swt.events.SelectionListener getSelectionAdapter() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			void populateComboBox() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		}*/
 	}
 
 

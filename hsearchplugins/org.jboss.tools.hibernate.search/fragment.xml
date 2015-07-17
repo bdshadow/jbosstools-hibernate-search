@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
-<plugin>
+<fragment>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -47,11 +47,4 @@
             id="org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditorInputFactory">
       </factory>
    </extension>
- <!--  <extension
-         point="org.hibernate.eclipse.console.actions">
-      <action
-            class="org.jboss.tools.hibernate.search.actions.IndexRebuildAction">
-      </action>
-   </extension> -->‡
-
-</plugin>
+</fragment>

@@ -3,23 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jbosstools-hibernate-search
 Bundle-SymbolicName: org.jboss.tools.hibernate.search;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.hibernate.eclipse.console;bundle-version="5.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: bdshadow
-Require-Bundle: org.hibernate.eclipse.console;bundle-version="5.0.0",
- org.eclipse.ui;bundle-version="3.107.0",
- org.eclipse.core.runtime;bundle-version="3.10.0",
- org.hibernate.eclipse;bundle-version="5.0.0",
- org.eclipse.ui.ide;bundle-version="3.10.100",
- org.jboss.tools.hibernate.runtime.common;bundle-version="5.0.0",
- org.jboss.tools.hibernate.runtime.spi;bundle-version="5.0.0",
- org.jboss.tools.hibernate.search.runtime.spi;bundle-version="1.0.0",
- org.eclipse.jdt.core;bundle-version="3.11.0",
- org.eclipse.ui.editors;bundle-version="3.9.0",
- org.eclipse.jface.text;bundle-version="3.10.0",
- org.eclipse.core.resources;bundle-version="3.9.100",
- org.eclipse.core.filesystem;bundle-version="1.4.200",
- org.eclipse.jdt.ui;bundle-version="3.10.100"
-Bundle-Activator: org.jboss.tools.hibernate.search.HibernateSearchConsolePlugin
-Bundle-ActivationPolicy: lazy
 Export-Package: org.jboss.tools.hibernate.search,
  org.jboss.tools.hibernate.search.actions
+Require-Bundle: org.jboss.tools.hibernate.search.runtime.spi;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy

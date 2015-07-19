@@ -34,7 +34,7 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void doAnalyze(String text, String analyzerClassName) {
+	public String doAnalyze(String text, String analyzerClassName) {
 		Analyzer analyzer = null;
 		try {
 			Class analyzerClass = Class.forName(analyzerClassName);
@@ -50,18 +50,19 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 			TokenStream stream = analyzer.tokenStream("field", new StringReader(text));
 			CharTermAttribute termAtt = stream.addAttribute(CharTermAttribute.class);
 			stream.reset();
-
+			StringBuilder result = new StringBuilder();
 			while (stream.incrementToken()) {
-				System.out.println(termAtt.toString());
+				result.append(termAtt.toString() + "\n");
 			}
 
 			stream.end();
 			stream.close();
+			return result.toString();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		return "";
 	}
 
 }

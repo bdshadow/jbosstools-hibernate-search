@@ -25,7 +25,8 @@ public class AnalyzersCombo extends ComboContribution {
 
 			public void run() {
 				String[] items = new String[] {
-						"org.apache.lucene.analysis.standard.StandardAnalyzer"
+						"org.apache.lucene.analysis.standard.StandardAnalyzer",
+						"org.apache.lucene.analysis.core.WhitespaceAnalyzer"
 				};
 				comboControl.setItems( items );
 			}

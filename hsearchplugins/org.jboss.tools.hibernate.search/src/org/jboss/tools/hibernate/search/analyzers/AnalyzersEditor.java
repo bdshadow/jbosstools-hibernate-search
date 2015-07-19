@@ -1,6 +1,7 @@
 package org.jboss.tools.hibernate.search.analyzers;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextListener;
@@ -17,18 +18,21 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.IShowEditorInput;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.hibernate.console.ConsoleConfiguration;
-import org.hibernate.eclipse.console.AbstractQueryEditor;
+import org.hibernate.eclipse.console.AnalyzersCombo;
 import org.hibernate.eclipse.console.ComboContribution;
-import org.hibernate.eclipse.console.views.QueryPageTabView;
+import org.hibernate.eclipse.console.actions.ClearAction;
+import org.jboss.tools.hibernate.search.actions.ExecuteAnalyzerAction;
 
-public class AnalyzersEditor extends AbstractQueryEditor {
+public class AnalyzersEditor extends TextEditor implements IShowEditorInput {
 	
 	private AnalyzersEditorDocumentSetupParticipant docSetupParticipant;
-	private ToolBarManager analyzersTbm;
+	private ToolBarManager tbm;
+	private ExecuteAnalyzerAction execAction;
+	private ClearAction clearAction = null;
+	private AnalyzersCombo analyzersCombo;
 	
 	public AnalyzersEditor() {
 		super();
@@ -38,7 +42,6 @@ public class AnalyzersEditor extends AbstractQueryEditor {
 		parent.setLayout(new GridLayout(1,false));
 		
 		createToolbar(parent);
-		//createAnalyzersToolbar(parent);
 		super.createPartControl( parent );
 		if (getSourceViewer() != null ){
 			getSourceViewer().addTextListener(new ITextListener(){
@@ -97,47 +100,49 @@ public class AnalyzersEditor extends AbstractQueryEditor {
 
 	}
 	
-	public void executeQuery(ConsoleConfiguration cfg) {
-		final IWorkbenchPage activePage = getEditorSite().getPage();
-		try {
-			activePage.showView(QueryPageTabView.ID);
-		} catch (PartInitException e) {
-			// ignore
-		}
-	}
-	
-	protected void createAnalyzersToolbar(Composite parent) {
+	protected void createToolbar(Composite parent) {
 		ToolBar bar = new ToolBar( parent, SWT.HORIZONTAL );
 		bar.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
 		
-		analyzersTbm = new ToolBarManager( bar );
+		tbm = new ToolBarManager( bar );
+		execAction = new ExecuteAnalyzerAction(this);
+		clearAction = new ClearAction(this);
+		analyzersCombo = new AnalyzersCombo("analyzer");
 		
-/*		ComboContribution cc = new ComboContribution() {
-
-			@Override
-			protected org.eclipse.swt.events.SelectionListener getSelectionAdapter() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			void populateComboBox() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		}*/
-	}
-
-
-	@Override
-	protected String getConnectedImageFilePath() {
-		return null;
+		ActionContributionItem item = new ActionContributionItem(execAction);
+		tbm.add(item);
+		tbm.add(analyzersCombo);
+		tbm.add(clearAction);
+		tbm.update(true);
 	}
 
 	@Override
-	protected String getSaveAsFileExtension() {
-		return "*.nlz";
+	public void showEditorInput(IEditorInput editorInput) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	protected void updateExecButton() {
+		execAction.setEnabled(getEditorText().trim().length() > 0);
+	}
+	
+	public String getEditorText() {
+		IEditorInput editorInput = getEditorInput();
+		IDocumentProvider docProvider = getDocumentProvider();
+		IDocument doc = docProvider.getDocument( editorInput );
+		return doc.get();
+	}
+	
+	public boolean initTextAndToolTip(String text) {
+		if (execAction != null) {
+			execAction.initTextAndToolTip(text);
+			return true;
+		}
+		return false;
+	}
+	
+	public String getAnalyzerSelected() {
+		return analyzersCombo.getAnalyzer();
 	}
 
 }

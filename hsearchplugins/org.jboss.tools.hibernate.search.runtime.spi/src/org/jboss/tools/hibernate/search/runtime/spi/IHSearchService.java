@@ -8,4 +8,6 @@ import org.jboss.tools.hibernate.runtime.spi.ISessionFactory;
 public interface IHSearchService extends IService {
 
 	void newIndexRebuild(ISessionFactory sessionFactory, Set<Class> entities);
+	
+	void doAnalyze(String text, String analyzerClassName);
 }

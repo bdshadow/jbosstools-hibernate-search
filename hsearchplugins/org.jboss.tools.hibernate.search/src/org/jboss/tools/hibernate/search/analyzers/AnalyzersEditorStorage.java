@@ -14,8 +14,10 @@ public class AnalyzersEditorStorage implements IStorage {
 
 	private String contents;
 	private String nameLabel;
+	private String cc;
 
-	public AnalyzersEditorStorage(String name, String source) {
+	public AnalyzersEditorStorage(String cc, String name, String source) {
+		setConsoleConfiguration(cc);
 		setName(name);
 		setContents(source);
 	}
@@ -85,5 +87,13 @@ public class AnalyzersEditorStorage implements IStorage {
 
 	public void setContents(String text) {
 		this.contents = text;
+	}
+
+	public String getConsoleConfiguration() {
+		return cc;
+	}
+
+	public void setConsoleConfiguration(String cc) {
+		this.cc = cc;
 	}
 }

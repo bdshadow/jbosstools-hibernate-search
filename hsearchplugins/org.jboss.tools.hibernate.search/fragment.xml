@@ -10,11 +10,35 @@
                commandId="org.jboss.tools.hibernate.search.actions.indexrebuild"
                label="Index Rebuild"
                style="push">
+               <visibleWhen>
+               <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <instanceof
+                        value="org.hibernate.console.ConsoleConfiguration">
+                  </instanceof>
+               </iterate>
+            </with>
+            </visibleWhen>
          </command>
          <command
                commandId="org.jboss.tools.hibernate.search.actions.openanalyzers"
                label="Try analyzers"
                style="push">
+            <visibleWhen>
+               <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <instanceof
+                        value="org.hibernate.console.ConsoleConfiguration">
+                  </instanceof>
+               </iterate>
+            </with>
+            </visibleWhen>
          </command>
       </menuContribution>
    </extension>
@@ -26,7 +50,6 @@
             name="IndexRebuildAction">
       </command>
       <command
-            defaultHandler="org.jboss.tools.hibernate.search.actions.AnalyzersScratchpadAction"
             id="org.jboss.tools.hibernate.search.actions.openanalyzers"
             name="OpenAnalyzersAction">
       </command>
@@ -46,5 +69,22 @@
             class="org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorInputFactory"
             id="org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditorInputFactory">
       </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="hibernatecategory"
+            class="org.jboss.tools.hibernate.search.views.AnalysisResultTabView"
+            id="org.jboss.tools.hibernate.search.views.AnalysisResultTabView"
+            name="AnalysisResultTabView"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.jboss.tools.hibernate.search.actions.AnalyzersScratchpadAction"
+            commandId="org.jboss.tools.hibernate.search.actions.openanalyzers">
+      </handler>
    </extension>
 </fragment>

@@ -10,6 +10,7 @@ public class AnalyzersEditorInputFactory implements IElementFactory {
 	public final static String ID_FACTORY =  "org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditorInputFactory"; //$NON-NLS-1$
     public final static String ID_STORAGE_EDITOR_INPUT = "AnalyzersTestEditorInput"; //$NON-NLS-1$
     
+    public final static String KEY_CONFIGURATION_NAME = "configurationname"; //$NON-NLS-1$
     public final static String KEY_EDITOR_INPUT_TYPE = "editorInputType"; //$NON-NLS-1$ 
     public final static String KEY_STORAGE_CONTENT = "storageContent"; //$NON-NLS-1$
     public final static String KEY_STORAGE_NAME = "storageName"; //$NON-NLS-1$
@@ -19,7 +20,8 @@ public class AnalyzersEditorInputFactory implements IElementFactory {
         // Create a Storage object from the memento.
         String contentName = memento.getString( KEY_STORAGE_NAME );
         String contentString = memento.getString( KEY_STORAGE_CONTENT );
-        AnalyzersEditorStorage storage = new AnalyzersEditorStorage(contentName, contentString );
+        String configurationName = memento.getString(KEY_CONFIGURATION_NAME);
+        AnalyzersEditorStorage storage = new AnalyzersEditorStorage(configurationName, contentName, contentString );
         
         AnalyzersEditorInput analyzersInput = new AnalyzersEditorInput( storage );
         return analyzersInput; 

@@ -2,8 +2,8 @@ package org.jboss.tools.hibernate.search;
 
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.eclipse.console.HibernateConsolePlugin;
 import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorInput;
 import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorStorage;
@@ -18,10 +18,10 @@ public class HibernateSearchConsolePlugin {
 		setPlugin(this);
 	}
 	
-	public IEditorPart openAnalyzersTestEditor() {
+	public IEditorPart openAnalyzersTestEditor(ConsoleConfiguration cc) {
 		try {
 			IWorkbenchPage page = HibernateConsolePlugin.getActiveWorkbenchWindow().getActivePage();
-			AnalyzersEditorStorage storage = new AnalyzersEditorStorage("Analyzers Test", "");
+			AnalyzersEditorStorage storage = new AnalyzersEditorStorage(cc.getName(), "Analyzers Test", "");
 			AnalyzersEditorInput editorInput = new AnalyzersEditorInput(storage);
 			return page.openEditor(editorInput, "org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditor", true); //$NON-NLS-1$
 		} catch (PartInitException pie) {

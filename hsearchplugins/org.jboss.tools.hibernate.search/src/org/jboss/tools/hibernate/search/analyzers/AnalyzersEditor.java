@@ -107,7 +107,7 @@ public class AnalyzersEditor extends TextEditor implements IShowEditorInput {
 		tbm = new ToolBarManager( bar );
 		execAction = new ExecuteAnalyzerAction(this);
 		clearAction = new ClearAction(this);
-		analyzersCombo = new AnalyzersCombo("analyzer");
+		analyzersCombo = new AnalyzersCombo(this, "analyzer");
 		
 		ActionContributionItem item = new ActionContributionItem(execAction);
 		tbm.add(item);
@@ -143,6 +143,10 @@ public class AnalyzersEditor extends TextEditor implements IShowEditorInput {
 	
 	public String getAnalyzerSelected() {
 		return analyzersCombo.getAnalyzer();
+	}
+	
+	public String getConsoleConfigurationName() {
+		return ((AnalyzersEditorStorage)((AnalyzersEditorInput)this.getEditorInput()).getStorage()).getConsoleConfiguration();
 	}
 
 }

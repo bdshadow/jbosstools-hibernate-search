@@ -1,6 +1,9 @@
 package org.jboss.tools.hibernate.search.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -11,6 +14,7 @@ import org.hibernate.eclipse.console.utils.EclipseImages;
 import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditor;
 import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
+import org.jboss.tools.hibernate.search.views.AnalysisResultTabView;
 
 public class ExecuteAnalyzerAction extends Action {
 
@@ -32,10 +36,18 @@ public class ExecuteAnalyzerAction extends Action {
 	protected void execute(AnalyzersEditor editor) {
 		IHSearchService service = HSearchServiceLookup.findService("4.5");
 		String result = service.doAnalyze(editor.getEditorText(), editor.getAnalyzerSelected());
-		MessageConsole myConsole = findConsole("Analysis Result");
-		MessageConsoleStream out = myConsole.newMessageStream();
-		out.println(result);
-		out.println();
+		try {
+			AnalysisResultTabView resultView = (AnalysisResultTabView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(AnalysisResultTabView.ID);
+			resultView.setResult(result);
+		} catch (PartInitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+//		MessageConsole myConsole = findConsole("Analysis Result");
+//		MessageConsoleStream out = myConsole.newMessageStream();
+//		out.println(result);
+//		out.println();
 	}
 
 	public void initTextAndToolTip(String text) {

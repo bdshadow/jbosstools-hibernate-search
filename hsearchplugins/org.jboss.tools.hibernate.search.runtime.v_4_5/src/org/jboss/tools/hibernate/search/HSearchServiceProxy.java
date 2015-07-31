@@ -44,6 +44,7 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 			analyzer = (Analyzer) constructor.newInstance(luceneVersion);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
+			return "";
 		}
 
 		try {
@@ -59,10 +60,10 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 			stream.close();
 			return result.toString();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "";
 		}
-		return "";
+		
 	}
 
 }

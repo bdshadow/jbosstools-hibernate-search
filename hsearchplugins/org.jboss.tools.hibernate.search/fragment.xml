@@ -73,6 +73,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            allowMultiple="false"
             category="hibernatecategory"
             class="org.jboss.tools.hibernate.search.views.AnalysisResultTabView"
             id="org.jboss.tools.hibernate.search.views.AnalysisResultTabView"

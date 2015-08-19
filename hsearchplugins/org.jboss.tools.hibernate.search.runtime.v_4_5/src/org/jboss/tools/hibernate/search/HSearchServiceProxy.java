@@ -38,11 +38,21 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 		Analyzer analyzer = null;
 		try {
 			Class analyzerClass = Class.forName(analyzerClassName);
-			Version luceneVersion = Version.LUCENE_4_10_3;
-			Constructor constructor = analyzerClass.getConstructor(Version.class);
-			constructor.setAccessible(true);
-			analyzer = (Analyzer) constructor.newInstance(luceneVersion);
-		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			for (Constructor constructor : analyzerClass.getConstructors()) {
+				if (constructor.getParameterTypes().length == 0) {
+					constructor.setAccessible(true);
+					analyzer = (Analyzer) constructor.newInstance(null);
+					break;
+				}
+				if (constructor.getParameterTypes().length == 1 && constructor.getParameterTypes()[0].equals(Version.class)) {
+					constructor.setAccessible(true);
+					Version luceneVersion = Version.LUCENE_4_10_3;
+					analyzer = (Analyzer) constructor.newInstance(luceneVersion);
+					break;
+				}
+			}
+			
+		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 			return "";
 		}

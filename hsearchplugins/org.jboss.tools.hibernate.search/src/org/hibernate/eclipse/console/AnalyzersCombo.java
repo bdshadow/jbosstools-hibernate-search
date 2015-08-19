@@ -53,7 +53,23 @@ public class AnalyzersCombo extends ComboContribution {
 					IType[] types = analyzersType.newTypeHierarchy(new NullProgressMonitor()).getAllSubtypes(analyzersType);
 					List<String> typesList = new LinkedList<String>();
 					for (IType type : types) {
-						typesList.add(type.getFullyQualifiedName());
+						try {
+							if (type.getMethod(type.getElementName(), new String[0]).isConstructor()) {
+								typesList.add(type.getFullyQualifiedName());
+								continue;
+							}
+							
+						} catch (JavaModelException e) {
+						}
+						
+						try {
+							if (type.getMethod(type.getElementName(), new String[] {"Lorg.apache.lucene.util.Version;"}).isConstructor()) {
+								typesList.add(type.getFullyQualifiedName());
+								continue;
+							}
+						} catch (JavaModelException e) {
+						}
+						
 					}
 					comboControl.setItems(typesList.toArray(new String[0]));
 				} catch (JavaModelException e) {

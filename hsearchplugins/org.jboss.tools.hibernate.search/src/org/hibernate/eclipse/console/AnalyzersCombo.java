@@ -72,6 +72,7 @@ public class AnalyzersCombo extends ComboContribution {
 						
 					}
 					comboControl.setItems(typesList.toArray(new String[0]));
+					comboControl.select(0);
 				} catch (JavaModelException e) {
 					HibernateConsolePlugin.getDefault().log(e);
 				}

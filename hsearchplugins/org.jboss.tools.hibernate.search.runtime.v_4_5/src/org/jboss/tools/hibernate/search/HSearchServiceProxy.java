@@ -25,7 +25,7 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 		try {
 			SessionFactoryImpl factory = (SessionFactoryImpl) ((IFacade) sessionFactory).getTarget();
 			FullTextSession fullTextSession = Search.getFullTextSession(factory.openSession());
-			fullTextSession.createIndexer(entities.toArray(new Class[0])).startAndWait();
+			fullTextSession.createIndexer(/*entities.toArray(new Class[0])*/).startAndWait();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

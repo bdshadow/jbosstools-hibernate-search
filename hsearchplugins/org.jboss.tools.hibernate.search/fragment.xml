@@ -2,6 +2,22 @@
 <?eclipse version="3.4"?>
 <fragment>
    <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.jboss.tools.hibernate.search.actions.IndexRebuildAction"
+            id="org.jboss.tools.hibernate.search.actions.indexrebuild"
+            name="IndexRebuildAction">
+      </command>
+      <command
+            id="org.jboss.tools.hibernate.search.actions.openanalyzers"
+            name="OpenAnalyzersAction">
+      </command>
+      <command
+            id="org.jboss.tools.hibernate.search.actions.exploredocs"
+            name="ExploreDocumentAction">
+      </command>
+   </extension>
+   <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
@@ -11,6 +27,23 @@
                label="Index Rebuild"
                style="push">
                <visibleWhen>
+               <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <instanceof
+                        value="org.hibernate.console.ConsoleConfiguration">
+                  </instanceof>
+               </iterate>
+            </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.jboss.tools.hibernate.search.actions.exploredocs"
+               label="Explore Documents"
+               style="push">
+           <visibleWhen>
                <with
                   variable="selection">
                <iterate
@@ -43,24 +76,18 @@
       </menuContribution>
    </extension>
    <extension
-         point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="org.jboss.tools.hibernate.search.actions.IndexRebuildAction"
-            id="org.jboss.tools.hibernate.search.actions.indexrebuild"
-            name="IndexRebuildAction">
-      </command>
-      <command
-            id="org.jboss.tools.hibernate.search.actions.openanalyzers"
-            name="OpenAnalyzersAction">
-      </command>
-   </extension>
-   <extension
          point="org.eclipse.ui.editors">
       <editor
             class="org.jboss.tools.hibernate.search.analyzers.AnalyzersEditor"
             default="false"
             id="org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditor"
             name="Analyzers Test">
+      </editor>
+      <editor
+            class="org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditor"
+            default="false"
+            id="org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditor"
+            name="Lucene Documents">
       </editor>
    </extension>
    <extension
@@ -86,6 +113,10 @@
       <handler
             class="org.jboss.tools.hibernate.search.actions.AnalyzersScratchpadAction"
             commandId="org.jboss.tools.hibernate.search.actions.openanalyzers">
+      </handler>
+      <handler
+            class="org.jboss.tools.hibernate.search.actions.ExploreDocumentsAction"
+            commandId="org.jboss.tools.hibernate.search.actions.exploredocs">
       </handler>
    </extension>
 </fragment>

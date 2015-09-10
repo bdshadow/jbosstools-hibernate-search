@@ -1,20 +1,31 @@
 package org.jboss.tools.hibernate.search.docs;
 
+import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.IStorageEditorInput;
 
-public class ExploreDocumentsEditorInput implements IEditorInput {
+public class ExploreDocumentsEditorInput implements IStorageEditorInput {
 	
 	private String name;
 	
-	public ExploreDocumentsEditorInput(String name) {
-		this.name = name;
+	private IStorage storage;
+	
+	public ExploreDocumentsEditorInput(IStorage storage) {
+		if (storage == null) {
+			throw new IllegalArgumentException();
+        }
+		setStorage(storage);
+		setName(storage.getName());
 	}
 
 	@Override
 	public boolean exists() {
-		return true;
+		if (storage != null) {
+        	return true;
+        }
+        return false;
 	}
 
 	@Override
@@ -46,4 +57,16 @@ public class ExploreDocumentsEditorInput implements IEditorInput {
 		return null;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setStorage(IStorage storage) {
+		this.storage = storage;
+	}
+
+	@Override
+	public IStorage getStorage() {
+		return this.storage;
+	}
 }

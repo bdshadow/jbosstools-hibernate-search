@@ -1,5 +1,6 @@
 package org.jboss.tools.hibernate.search.actions;
 
+import java.lang.reflect.Field;
 import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.hibernate.console.ConsoleConfigClassLoader;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.console.execution.ExecutionContext.Command;
 import org.hibernate.eclipse.console.utils.ClassLoaderHelper;
@@ -35,8 +37,18 @@ public class IndexRebuildAction extends AbstractHandler {
 				continue;
 			}
 			final ConsoleConfiguration config = (ConsoleConfiguration) node;
-			IJavaProject project = ProjectUtils.findJavaProject(config);
-			URLClassLoader classloader = ClassLoaderHelper.getProjectClassLoader(project);
+			//IJavaProject project = ProjectUtils.findJavaProject(config);
+			ClassLoader classloader = null;
+			try {
+				Field loaderField = config.getClass().getDeclaredField("classLoader");
+				loaderField.setAccessible(true);
+				classloader = (ConsoleConfigClassLoader)loaderField.get(config);
+				
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			//URLClassLoader classloader = ClassLoaderHelper.getProjectClassLoader(project);
 			Map<String, IClassMetadata> meta = config.getSessionFactory().getAllClassMetadata();
 			final Set<Class> classes = new HashSet<Class>();
 			try {

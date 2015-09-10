@@ -8,6 +8,7 @@ import org.hibernate.eclipse.console.HibernateConsolePlugin;
 import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorInput;
 import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorStorage;
 import org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditorInput;
+import org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditorStorage;
 
 public class HibernateSearchConsolePlugin {
 	
@@ -30,10 +31,11 @@ public class HibernateSearchConsolePlugin {
 		}
 	}
 	
-	public IEditorPart openExploreDocumentsEditor() {
+	public IEditorPart openExploreDocumentsEditor(ConsoleConfiguration cc) {
 		try {
 			IWorkbenchPage page = HibernateConsolePlugin.getActiveWorkbenchWindow().getActivePage();
-			ExploreDocumentsEditorInput input = new ExploreDocumentsEditorInput("Documents info");
+			ExploreDocumentsEditorStorage storage = new ExploreDocumentsEditorStorage(cc.getName(), "Lucene Documents");
+			ExploreDocumentsEditorInput input = new ExploreDocumentsEditorInput(storage);
 			return page.openEditor(input, "org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditor", true); //$NON-NLS-1$
 		} catch (PartInitException e) {
 			e.printStackTrace();

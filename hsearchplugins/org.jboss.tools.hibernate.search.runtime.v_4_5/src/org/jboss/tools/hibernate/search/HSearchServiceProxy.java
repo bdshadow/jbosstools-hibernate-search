@@ -4,11 +4,18 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.util.Version;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.search.FullTextSession;
@@ -74,6 +81,39 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 			return "";
 		}
 		
+	}
+
+	@Override
+	public List<Map<String, String>> getEntityDocuments(ISessionFactory sessionFactory, Class... entities) {
+		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+		SessionFactoryImpl factory = (SessionFactoryImpl) ((IFacade) sessionFactory).getTarget();
+		FullTextSession fullTextSession = Search.getFullTextSession(factory.openSession());
+		IndexReader ireader = fullTextSession.getSearchFactory().getIndexReaderAccessor().open(entities);
+
+		for (int i = 0; i < ireader.numDocs(); i++) {
+			try {
+				Document doc = ireader.document(i);
+				Map<String, String> fieldValueMap = new TreeMap<String, String>();
+				for (IndexableField field: doc.getFields()) {
+					fieldValueMap.put(field.name(), field.stringValue());
+				}
+				list.add(fieldValueMap);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+//		try {
+//			Document doc = DirectoryReader.open(FSDirectory.open(new File(indexPath))).document(0);
+//			for (IndexableField field: doc.getFields()) {
+//				fieldValueMap.put(field.stringValue(), doc.get(field.stringValue()));
+//			}
+//			
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		return list;
 	}
 
 }

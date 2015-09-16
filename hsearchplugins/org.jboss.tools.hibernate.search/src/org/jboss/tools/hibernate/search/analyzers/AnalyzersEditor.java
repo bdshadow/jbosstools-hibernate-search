@@ -19,15 +19,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IShowEditorInput;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.hibernate.eclipse.console.AnalyzersCombo;
 import org.hibernate.eclipse.console.actions.ClearAction;
 import org.jboss.tools.hibernate.search.actions.ExecuteAnalyzerAction;
-import org.jboss.tools.hibernate.search.views.AnalysisResultTabView;
 
 public class AnalyzersEditor extends TextEditor implements IShowEditorInput {
 	

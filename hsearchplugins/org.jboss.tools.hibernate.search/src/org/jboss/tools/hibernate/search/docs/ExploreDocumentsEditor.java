@@ -78,7 +78,18 @@ public class ExploreDocumentsEditor extends EditorPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, true));
-		
+		createOperatingConrols(parent);
+		createDocTable(parent);   
+	}
+	
+	private void tableInsert(Map<String, String> map) {
+		this.tableViewer.getTable().removeAll();
+		for (String field: map.keySet()) {
+			this.tableViewer.add(new TableObject(field, map.get(field)));
+		}
+	}
+	
+	protected void createOperatingConrols(Composite parent) {
 		createEntityCheckBoxes(parent);
 		
 		Composite block = new Composite(parent, SWT.NONE);
@@ -137,8 +148,6 @@ public class ExploreDocumentsEditor extends EditorPart {
 					e1.printStackTrace();
 				}
 				
-//				IJavaProject project = ProjectUtils.findJavaProject(cc);
-//				URLClassLoader classloader = ClassLoaderHelper.getProjectClassLoader(project);
 				Set<Class> classes = new HashSet<Class>();
 				for (Button entityBtn: entityCheckBoxes) {
 					if (entityBtn.getSelection()) {
@@ -156,7 +165,21 @@ public class ExploreDocumentsEditor extends EditorPart {
 			}
 			
 		});				
+	}
+	
+	protected void createEntityCheckBoxes(Composite parent) {
+		Composite entitiesComposite = new Composite(parent, SWT.NONE);
+		entitiesComposite.setLayout(new RowLayout());
+
+		for (String entity: getConsoleConfiguration().getSessionFactory().getAllClassMetadata().keySet()) {
+			Button button = new Button(entitiesComposite, SWT.CHECK);
+			button.setText(entity);
+			this.entityCheckBoxes.add(button);
+		}
 		
+	}
+	
+	protected void createDocTable(Composite parent) {
 		this.tableViewer = new TableViewer(parent, SWT.MULTI | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		createColumns();
 		
@@ -171,28 +194,6 @@ public class ExploreDocumentsEditor extends EditorPart {
 	    gridData.horizontalAlignment = SWT.FILL;
 	    gridData.grabExcessVerticalSpace = true;
 	    tableViewer.getControl().setLayoutData(gridData);
-	    
-	    
-		
-	}
-	
-	private void tableInsert(Map<String, String> map) {
-		this.tableViewer.getTable().removeAll();
-		for (String field: map.keySet()) {
-			this.tableViewer.add(new TableObject(field, map.get(field)));
-		}
-	}
-	
-	protected void createEntityCheckBoxes(Composite parent) {
-		Composite entitiesComposite = new Composite(parent, SWT.NONE);
-		entitiesComposite.setLayout(new RowLayout());
-
-		for (String entity: getConsoleConfiguration().getSessionFactory().getAllClassMetadata().keySet()) {
-			Button button = new Button(entitiesComposite, SWT.CHECK);
-			button.setText(entity);
-			this.entityCheckBoxes.add(button);
-		}
-		
 	}
 	
 	protected void createColumns() {

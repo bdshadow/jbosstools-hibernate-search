@@ -64,6 +64,14 @@ public class AnalyzersEditorInput implements IStorageEditorInput, IPersistableEl
 	public String getFactoryId() {
 		return AnalyzersEditorInputFactory.ID_FACTORY;
 	}
+	
+	public void setEditorInputContents(String contents) {
+		((AnalyzersEditorStorage)getStorage()).setContents(contents);
+	}
+	
+	public void setAnalyzerChosen(String analyzer) {
+		((AnalyzersEditorStorage)getStorage()).setAnalyzerChosen(analyzer);
+	}
 
 	@Override
 	public IStorage getStorage() {

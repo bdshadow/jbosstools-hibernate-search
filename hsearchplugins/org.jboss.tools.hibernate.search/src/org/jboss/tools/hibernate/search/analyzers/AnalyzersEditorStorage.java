@@ -15,11 +15,13 @@ public class AnalyzersEditorStorage implements IStorage {
 	private String contents;
 	private String nameLabel;
 	private String cc;
+	private String analyzerChosen;
 
 	public AnalyzersEditorStorage(String cc, String name, String source) {
 		setConsoleConfiguration(cc);
 		setName(name);
 		setContents(source);
+		setAnalyzerChosen("org.apache.lucene.analysis.standard.StandardAnalyzer");
 	}
 
 	@Override
@@ -95,5 +97,13 @@ public class AnalyzersEditorStorage implements IStorage {
 
 	public void setConsoleConfiguration(String cc) {
 		this.cc = cc;
+	}
+
+	public String getAnalyzerChosen() {
+		return analyzerChosen;
+	}
+
+	public void setAnalyzerChosen(String analyzerChosen) {
+		this.analyzerChosen = analyzerChosen;
 	}
 }

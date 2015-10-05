@@ -16,6 +16,8 @@ import org.hibernate.eclipse.console.utils.LaunchHelper;
 import org.hibernate.eclipse.console.utils.ProjectUtils;
 import org.hibernate.eclipse.launch.IConsoleConfigurationLaunchConstants;
 import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditor;
+import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorInput;
+import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorStorage;
 
 public class AnalyzersCombo extends ComboContribution {
 
@@ -72,7 +74,7 @@ public class AnalyzersCombo extends ComboContribution {
 						
 					}
 					comboControl.setItems(typesList.toArray(new String[0]));
-					comboControl.select(0);
+					setItemSelected();
 				} catch (JavaModelException e) {
 					HibernateConsolePlugin.getDefault().log(e);
 				}
@@ -80,6 +82,16 @@ public class AnalyzersCombo extends ComboContribution {
 			}
 
 		});
+	}
+	
+	protected void setItemSelected() {
+		String analyzerChosen = ((AnalyzersEditorStorage)((AnalyzersEditorInput)editor.getEditorInput()).getStorage()).getAnalyzerChosen();
+		for (int i = 0; i < comboControl.getItemCount(); i++) {
+			if (comboControl.getItem(i).equals(analyzerChosen)) {
+				comboControl.select(i);
+				return;
+			}
+		}
 	}
 
 	protected void setSelectionAdapter() {

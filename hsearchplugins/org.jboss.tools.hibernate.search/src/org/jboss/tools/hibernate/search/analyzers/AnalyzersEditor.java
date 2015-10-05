@@ -1,6 +1,7 @@
 package org.jboss.tools.hibernate.search.analyzers;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.text.IDocument;
@@ -109,6 +110,7 @@ public class AnalyzersEditor extends TextEditor implements IShowEditorInput {
 		clearAction = new ClearAction(this);
 		analyzersCombo = new AnalyzersCombo(this, "analyzer");
 		
+		
 		ActionContributionItem item = new ActionContributionItem(execAction);
 		tbm.add(item);
 		tbm.add(analyzersCombo);
@@ -148,5 +150,14 @@ public class AnalyzersEditor extends TextEditor implements IShowEditorInput {
 	public String getConsoleConfigurationName() {
 		return ((AnalyzersEditorStorage)((AnalyzersEditorInput)this.getEditorInput()).getStorage()).getConsoleConfiguration();
 	}
+	
+	@Override
+	public void doSave(IProgressMonitor progressMonitor) {
+		AnalyzersEditorInput input = (AnalyzersEditorInput)getEditorInput();
+		input.setEditorInputContents(getEditorText());
+		input.setAnalyzerChosen(getAnalyzerSelected());
+		super.doSave(progressMonitor);
+	}
+			
 
 }

@@ -14,7 +14,8 @@ public class AnalyzersEditorInputFactory implements IElementFactory {
     public final static String KEY_EDITOR_INPUT_TYPE = "editorInputType"; //$NON-NLS-1$ 
     public final static String KEY_STORAGE_CONTENT = "storageContent"; //$NON-NLS-1$
     public final static String KEY_STORAGE_NAME = "storageName"; //$NON-NLS-1$
-
+    public final static String KEY_STORAGE_ANALYZER = "analyzerSelected"; //$NON-NLS-1$
+    
 	@Override
 	public IAdaptable createElement(IMemento memento) {      
         // Create a Storage object from the memento.
@@ -22,6 +23,7 @@ public class AnalyzersEditorInputFactory implements IElementFactory {
         String contentString = memento.getString( KEY_STORAGE_CONTENT );
         String configurationName = memento.getString(KEY_CONFIGURATION_NAME);
         AnalyzersEditorStorage storage = new AnalyzersEditorStorage(configurationName, contentName, contentString );
+        storage.setAnalyzerChosen(memento.getString(KEY_STORAGE_ANALYZER));
         
         AnalyzersEditorInput analyzersInput = new AnalyzersEditorInput( storage );
         return analyzersInput; 
@@ -34,11 +36,15 @@ public class AnalyzersEditorInputFactory implements IElementFactory {
         String storageName = null;
         String storageContent = ""; //$NON-NLS-1$
         IStorage storage = input.getStorage();
+        String configurationName = ""; //$NON-NLS-1$
+        String analyzer = "";
         if (storage != null) {
             storageName = storage.getName();            
             if (storage instanceof AnalyzersEditorStorage) {
-                AnalyzersEditorStorage sqlEditorStorage = (AnalyzersEditorStorage) storage;
-                storageContent = sqlEditorStorage.getContentsString();
+                AnalyzersEditorStorage analyzersEditorStorage = (AnalyzersEditorStorage) storage;
+                storageContent = analyzersEditorStorage.getContentsString();
+                configurationName = analyzersEditorStorage.getConsoleConfiguration();
+                analyzer = analyzersEditorStorage.getAnalyzerChosen();
             }
         }
      
@@ -47,6 +53,10 @@ public class AnalyzersEditorInputFactory implements IElementFactory {
         
         // Save the storage content string in the memento.
         memento.putString( KEY_STORAGE_CONTENT, storageContent );
+        
+        memento.putString( KEY_CONFIGURATION_NAME, configurationName);
+        
+        memento.putString(KEY_STORAGE_ANALYZER,  analyzer);
     }
 
 }

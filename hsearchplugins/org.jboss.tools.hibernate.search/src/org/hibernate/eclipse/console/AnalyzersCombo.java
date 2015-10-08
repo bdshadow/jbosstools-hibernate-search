@@ -89,6 +89,7 @@ public class AnalyzersCombo extends ComboContribution {
 		for (int i = 0; i < comboControl.getItemCount(); i++) {
 			if (comboControl.getItem(i).equals(analyzerChosen)) {
 				comboControl.select(i);
+				analyzer = analyzerChosen;
 				return;
 			}
 		}

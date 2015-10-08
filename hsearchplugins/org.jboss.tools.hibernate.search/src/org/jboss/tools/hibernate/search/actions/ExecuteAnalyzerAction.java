@@ -43,11 +43,6 @@ public class ExecuteAnalyzerAction extends Action {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-//		MessageConsole myConsole = findConsole("Analysis Result");
-//		MessageConsoleStream out = myConsole.newMessageStream();
-//		out.println(result);
-//		out.println();
 	}
 
 	public void initTextAndToolTip(String text) {
@@ -57,19 +52,6 @@ public class ExecuteAnalyzerAction extends Action {
 
 	public void setEditor(AnalyzersEditor editor) {
 		this.editor = editor;
-	}
-
-	private MessageConsole findConsole(String name) {
-		ConsolePlugin plugin = ConsolePlugin.getDefault();
-		IConsoleManager conMan = plugin.getConsoleManager();
-		IConsole[] existing = conMan.getConsoles();
-		for (int i = 0; i < existing.length; i++)
-			if (name.equals(existing[i].getName()))
-				return (MessageConsole) existing[i];
-		// no console found, so create a new one
-		MessageConsole myConsole = new MessageConsole(name, null);
-		conMan.addConsoles(new IConsole[] { myConsole });
-		return myConsole;
 	}
 
 }

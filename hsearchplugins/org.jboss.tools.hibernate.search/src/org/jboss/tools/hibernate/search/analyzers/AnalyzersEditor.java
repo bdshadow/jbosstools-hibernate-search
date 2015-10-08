@@ -73,6 +73,7 @@ public class AnalyzersEditor extends TextEditor implements IShowEditorInput {
 
 		});
 		initTextAndToolTip("Analyze");
+		execAction.run(); //in order to restore result view after workbench restore
 	}
 	
 	private AnalyzersEditorDocumentSetupParticipant getDocumentSetupParticipant() {

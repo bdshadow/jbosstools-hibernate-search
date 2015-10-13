@@ -37,7 +37,6 @@ public class IndexRebuildAction extends AbstractHandler {
 				continue;
 			}
 			final ConsoleConfiguration config = (ConsoleConfiguration) node;
-			//IJavaProject project = ProjectUtils.findJavaProject(config);
 			ClassLoader classloader = null;
 			try {
 				Field loaderField = config.getClass().getDeclaredField("classLoader");
@@ -48,7 +47,13 @@ public class IndexRebuildAction extends AbstractHandler {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			//URLClassLoader classloader = ClassLoaderHelper.getProjectClassLoader(project);
+			
+			if (config.getSessionFactory() == null) {
+				if (!config.hasConfiguration()) {
+					config.build();
+				}
+				config.buildSessionFactory();
+			}
 			Map<String, IClassMetadata> meta = config.getSessionFactory().getAllClassMetadata();
 			final Set<Class> classes = new HashSet<Class>();
 			try {

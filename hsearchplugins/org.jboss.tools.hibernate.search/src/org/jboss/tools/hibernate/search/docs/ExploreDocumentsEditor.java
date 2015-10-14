@@ -158,7 +158,7 @@ public class ExploreDocumentsEditor extends EditorPart {
 						}
 					}
 				}
-				IHSearchService service = HSearchServiceLookup.findService("4.5");
+				IHSearchService service = HSearchServiceLookup.findService("5.3");
 				docs = service.getEntityDocuments(cc.getSessionFactory(), classes.toArray(new Class[0]));
 				tableInsert(docs.get(0));
 				docNumberLbl.setText("0");

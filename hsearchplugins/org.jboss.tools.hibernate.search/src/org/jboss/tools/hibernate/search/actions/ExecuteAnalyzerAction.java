@@ -34,7 +34,7 @@ public class ExecuteAnalyzerAction extends Action {
 	}
 
 	protected void execute(AnalyzersEditor editor) {
-		IHSearchService service = HSearchServiceLookup.findService("4.5");
+		IHSearchService service = HSearchServiceLookup.findService("5.3");
 		String result = service.doAnalyze(editor.getEditorText(), editor.getAnalyzerSelected());
 		try {
 			AnalysisResultTabView resultView = (AnalysisResultTabView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(AnalysisResultTabView.ID);

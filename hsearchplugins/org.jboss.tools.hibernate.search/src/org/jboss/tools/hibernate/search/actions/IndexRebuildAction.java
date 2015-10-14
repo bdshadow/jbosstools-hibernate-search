@@ -70,7 +70,7 @@ public class IndexRebuildAction extends AbstractHandler {
 						if (cfg == null) {
 							return null;
 						}
-						IHSearchService service = HSearchServiceLookup.findService("4.5");
+						IHSearchService service = HSearchServiceLookup.findService("5.3");
 						service.newIndexRebuild(config.getSessionFactory(), classes);
 						return null;
 					}

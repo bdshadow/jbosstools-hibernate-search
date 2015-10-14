@@ -53,7 +53,7 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 				}
 				if (constructor.getParameterTypes().length == 1 && constructor.getParameterTypes()[0].equals(Version.class)) {
 					constructor.setAccessible(true);
-					Version luceneVersion = Version.LUCENE_4_10_3;
+					Version luceneVersion = Version.LUCENE_4_10_4;
 					analyzer = (Analyzer) constructor.newInstance(luceneVersion);
 					break;
 				}

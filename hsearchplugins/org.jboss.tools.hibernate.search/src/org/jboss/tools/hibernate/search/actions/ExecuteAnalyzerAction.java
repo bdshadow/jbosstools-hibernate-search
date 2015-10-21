@@ -11,6 +11,7 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.hibernate.console.ImageConstants;
 import org.hibernate.eclipse.console.utils.EclipseImages;
+import org.jboss.tools.hibernate.search.HSearchConsoleConfigurationPreferences;
 import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditor;
 import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
@@ -34,7 +35,7 @@ public class ExecuteAnalyzerAction extends Action {
 	}
 
 	protected void execute(AnalyzersEditor editor) {
-		IHSearchService service = HSearchServiceLookup.findService("5.3");
+		IHSearchService service = HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(editor.getConsoleConfigurationName()));
 		String result = service.doAnalyze(editor.getEditorText(), editor.getAnalyzerSelected());
 		try {
 			AnalysisResultTabView resultView = (AnalysisResultTabView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(AnalysisResultTabView.ID);

@@ -32,6 +32,7 @@ import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.console.ImageConstants;
 import org.hibernate.console.KnownConfigurations;
 import org.hibernate.eclipse.console.utils.EclipseImages;
+import org.jboss.tools.hibernate.search.HSearchConsoleConfigurationPreferences;
 import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
 
@@ -158,7 +159,7 @@ public class ExploreDocumentsEditor extends EditorPart {
 						}
 					}
 				}
-				IHSearchService service = HSearchServiceLookup.findService("5.3");
+				IHSearchService service = HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(cc.getName()));
 				docs = service.getEntityDocuments(cc.getSessionFactory(), classes.toArray(new Class[0]));
 				tableInsert(docs.get(0));
 				docNumberLbl.setText("0");

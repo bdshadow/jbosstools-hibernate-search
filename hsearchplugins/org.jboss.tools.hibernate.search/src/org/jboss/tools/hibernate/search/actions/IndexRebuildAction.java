@@ -21,6 +21,7 @@ import org.hibernate.eclipse.console.utils.ClassLoaderHelper;
 import org.hibernate.eclipse.console.utils.ProjectUtils;
 import org.jboss.tools.hibernate.runtime.spi.IClassMetadata;
 import org.jboss.tools.hibernate.runtime.spi.IConfiguration;
+import org.jboss.tools.hibernate.search.HSearchConsoleConfigurationPreferences;
 import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
 
@@ -70,7 +71,7 @@ public class IndexRebuildAction extends AbstractHandler {
 						if (cfg == null) {
 							return null;
 						}
-						IHSearchService service = HSearchServiceLookup.findService("5.3");
+						IHSearchService service = HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(config.getName()));
 						service.newIndexRebuild(config.getSessionFactory(), classes);
 						return null;
 					}

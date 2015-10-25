@@ -1,11 +1,13 @@
 package org.jboss.tools.hibernate.search.docs;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -138,16 +140,7 @@ public class ExploreDocumentsEditor extends EditorPart {
 			public void handleEvent(Event event) {
 				ConsoleConfiguration cc = getConsoleConfiguration();
 				
-				ClassLoader classloader = null;
-				try {
-					Field loaderField = cc.getClass().getDeclaredField("classLoader");
-					loaderField.setAccessible(true);
-					classloader = (ConsoleConfigClassLoader)loaderField.get(cc);
-					
-				} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				ClassLoader classloader =  getConfigClassLoader();
 				
 				Set<Class> classes = new HashSet<Class>();
 				for (Button entityBtn: entityCheckBoxes) {
@@ -168,10 +161,55 @@ public class ExploreDocumentsEditor extends EditorPart {
 		});				
 	}
 	
+	private ClassLoader getConfigClassLoader() {
+		try {
+			Field loaderField = getConsoleConfiguration().getClass().getDeclaredField("classLoader");
+			loaderField.setAccessible(true);
+			return (ConsoleConfigClassLoader)loaderField.get(getConsoleConfiguration());
+			
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
+			// would never happen
+		}
+		return null;
+	}
+	
 	protected void createEntityCheckBoxes(Composite parent) {
+		loadSessionFatory();
+		
 		Composite entitiesComposite = new Composite(parent, SWT.NONE);
 		entitiesComposite.setLayout(new RowLayout());
 
+		Set<String> entities = new TreeSet<String>(getConsoleConfiguration().getSessionFactory().getAllClassMetadata().keySet());
+		for (String entity: entities) {
+			if (!indexed(entity)) {
+				continue;
+			}
+			Button button = new Button(entitiesComposite, SWT.CHECK);
+			button.setText(entity);
+			this.entityCheckBoxes.add(button);
+		}
+		if (this.entityCheckBoxes.isEmpty()) {
+			new Label(entitiesComposite, SWT.NONE).setText("No entity classes anntotated @Indexed");
+		}
+		entitiesComposite.pack();
+	}
+	
+	private boolean indexed(String entity) {
+		ClassLoader classloader =  getConfigClassLoader();
+		try {
+			Annotation[] annotations = Class.forName(entity, true,  classloader).getAnnotations();
+			for (Annotation annotation : annotations) {
+				if ("org.hibernate.search.annotations.Indexed".equals(annotation.annotationType().getName())){
+					return true;
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			//
+		}
+		return false;
+	}
+	
+	private void loadSessionFatory() {
 		ConsoleConfiguration config = getConsoleConfiguration();
 		if (config.getSessionFactory() == null) {
 			if (!config.hasConfiguration()) {
@@ -179,13 +217,6 @@ public class ExploreDocumentsEditor extends EditorPart {
 			}
 			config.buildSessionFactory();
 		}
-		
-		for (String entity: config.getSessionFactory().getAllClassMetadata().keySet()) {
-			Button button = new Button(entitiesComposite, SWT.CHECK);
-			button.setText(entity);
-			this.entityCheckBoxes.add(button);
-		}
-		
 	}
 	
 	protected void createDocTable(Composite parent) {

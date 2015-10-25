@@ -172,7 +172,15 @@ public class ExploreDocumentsEditor extends EditorPart {
 		Composite entitiesComposite = new Composite(parent, SWT.NONE);
 		entitiesComposite.setLayout(new RowLayout());
 
-		for (String entity: getConsoleConfiguration().getSessionFactory().getAllClassMetadata().keySet()) {
+		ConsoleConfiguration config = getConsoleConfiguration();
+		if (config.getSessionFactory() == null) {
+			if (!config.hasConfiguration()) {
+				config.build();
+			}
+			config.buildSessionFactory();
+		}
+		
+		for (String entity: config.getSessionFactory().getAllClassMetadata().keySet()) {
 			Button button = new Button(entitiesComposite, SWT.CHECK);
 			button.setText(entity);
 			this.entityCheckBoxes.add(button);

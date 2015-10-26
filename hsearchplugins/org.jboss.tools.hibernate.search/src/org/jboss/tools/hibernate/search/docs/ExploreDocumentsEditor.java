@@ -31,6 +31,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.hibernate.console.ConsoleConfigClassLoader;
 import org.hibernate.console.ConsoleConfiguration;
+import org.hibernate.console.HibernateConsoleRuntimeException;
 import org.hibernate.console.ImageConstants;
 import org.hibernate.console.KnownConfigurations;
 import org.hibernate.eclipse.console.utils.EclipseImages;
@@ -110,6 +111,9 @@ public class ExploreDocumentsEditor extends EditorPart {
 
 			@Override
 			public void handleEvent(Event event) {
+				if (docs.isEmpty()) {
+					return;
+				}
 				int curNum = Integer.valueOf(docNumberLbl.getText());
 				if (curNum > 0) {
 					tableInsert(docs.get(curNum - 1));
@@ -123,6 +127,9 @@ public class ExploreDocumentsEditor extends EditorPart {
 
 			@Override
 			public void handleEvent(Event event) {
+				if (docs.isEmpty()) {
+					return;
+				}
 				int curNum = Integer.valueOf(docNumberLbl.getText());
 				if (curNum < docs.size() - 1) {
 					tableInsert(docs.get(curNum + 1));
@@ -157,6 +164,12 @@ public class ExploreDocumentsEditor extends EditorPart {
 				}
 				IHSearchService service = HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(cc.getName()));
 				docs = service.getEntityDocuments(cc.getSessionFactory(), classes.toArray(new Class[0]));
+				if (docs.isEmpty()) {
+					tableViewer.getTable().removeAll();
+					tableViewer.add(new TableObject("No Lucene index found", ""));
+					tableViewer.add(new TableObject("or your console configuration is out of sync", ""));
+					return;
+				}
 				tableInsert(docs.get(0));
 				docNumberLbl.setText("0");
 			}

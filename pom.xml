@@ -16,8 +16,8 @@
 	</properties>
 	
 	<modules>
+		<module>hsearchfeatures</module>
 		<module>hsearchplugins</module>
-		<!-- <module>hsearchfeatures</module> -->
 	</modules>
 
 	<repositories>

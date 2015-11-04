@@ -6,8 +6,13 @@ Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.hibernate.eclipse.console;bundle-version="5.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: bdshadow
-Export-Package: org.jboss.tools.hibernate.search,
- org.jboss.tools.hibernate.search.actions
+Export-Package: org.hibernate.eclipse.console,
+ org.jboss.tools.hibernate.search,
+ org.jboss.tools.hibernate.search.actions,
+ org.jboss.tools.hibernate.search.analyzers,
+ org.jboss.tools.hibernate.search.docs,
+ org.jboss.tools.hibernate.search.docs.actions,
+ org.jboss.tools.hibernate.search.views
 Require-Bundle: org.jboss.tools.hibernate.search.runtime.spi;bundle-version="1.0.0",
  org.eclipse.ui.console,
  org.eclipse.jdt.core

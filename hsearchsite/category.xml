@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.jboss.tools.hibernate.search.feature_1.0.0.qualifier.jar" id="org.jboss.tools.hibernate.search.feature" version="1.0.0.qualifier">
+      <category name="JBoss Tools HibernateSearchTools Build"/>
+   </feature>
+   <category-def name="JBoss Tools HibernateSearchTools Build" label="JBoss Tools HibernateSearchTools Build"/>
+</site>

@@ -18,6 +18,7 @@
 	<modules>
 		<module>hsearchfeatures</module>
 		<module>hsearchplugins</module>
+		<module>hsearchsite</module>
 	</modules>
 
 	<repositories>

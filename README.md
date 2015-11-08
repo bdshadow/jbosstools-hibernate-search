@@ -1,8 +1,19 @@
 # Eclipse plugin for Hibernate Search
 
-This is the repository of Hibernate Search plugin for Eclipse. It is in development as a part of Google Summer of Code. Some more info can be found in the blog: http://bdshadow.blogspot.ru/. This repository must be taken in account together with my fork of Hibernate Tools: https://github.com/bdshadow/jbosstools-hibernate, where I add extension points to pkug my HSearch tools in.
+This is the repository of Hibernate Search plugin for Eclipse. Its development started as a part of Google Summer of Code. Some more info can be found in the blog: http://bdshadow.blogspot.ru/. Currently it supports hibernate versions 4.0 and 4.3 ([can be chosen](http://tools.jboss.org/blog/hibernate-tools-changes.html) in hibernate console editing window)
 
-# The plan
+# You can try it by dowloading the archive [here](https://goo.gl/mMyWfu), then
+ 1. You need jbosstools 4.3.0 or higher be already installed
+ 2. In Eclipse: Help -> Install New Software -> Add -> Archive... -> use your intiuition while clicking "Next" button
+ 3. Restart eclipse (will be prompted at the end of step 2)
+ 4. In *hibernate.cfg.xml*:
+   * If *hibernate.search.autoregister_listeners* property set to *false*, change it to *true*
+   * For using Index Rebuild & Explore Documents tools set *hibernate.search.default.directory_provider* to *filesystem* (or any other available option) and *hibernate.search.default.indexBase* to some path in your system.
+ 5. Rebuild the configuration, associated with the modified configuration file
+ 
+The video examples of how to use the tool can be found in [this](http://bdshadow.blogspot.ru/2015/10/my-gsoc-2015-results.html) post.
+
+# The plan was
 * **Mechanism of adding configuration (hibernate.properties or hibernate.cfg.xml) via gui by extending similar mechanism of Hibernate Tools.**
 If we speak about extending existing Hibernate Tools, I suppose it to look like this:
 https://drive.google.com/open?id=0B6NhNcM1nZzneG00TUZjQVFlME0&authuser=0

@@ -10,10 +10,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -34,6 +36,8 @@ import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.console.HibernateConsoleRuntimeException;
 import org.hibernate.console.ImageConstants;
 import org.hibernate.console.KnownConfigurations;
+import org.hibernate.eclipse.console.HibernateConsoleMessages;
+import org.hibernate.eclipse.console.HibernateConsolePlugin;
 import org.hibernate.eclipse.console.utils.EclipseImages;
 import org.jboss.tools.hibernate.search.HSearchConsoleConfigurationPreferences;
 import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
@@ -228,7 +232,7 @@ public class ExploreDocumentsEditor extends EditorPart {
 	private void loadSessionFatory() {
 		ConsoleConfiguration config = getConsoleConfiguration();
 		if (config.getSessionFactory() == null) {
-			if (!config.hasConfiguration()) {
+			if (!config.hasConfiguration() && askUserForConfiguration(config.getName())) {
 				config.build();
 			}
 			config.buildSessionFactory();
@@ -291,6 +295,13 @@ public class ExploreDocumentsEditor extends EditorPart {
 	
 	public ConsoleConfiguration getConsoleConfiguration() {
 		return KnownConfigurations.getInstance().find(getConsoleConfigurationName());
+	}
+	
+	private boolean askUserForConfiguration(String name) {
+		String out = NLS.bind(HibernateConsoleMessages.AbstractQueryEditor_do_you_want_open_session_factory, name);
+		return MessageDialog.openQuestion( HibernateConsolePlugin.getDefault()
+				.getWorkbench().getActiveWorkbenchWindow().getShell(),
+				HibernateConsoleMessages.AbstractQueryEditor_open_session_factory, out );
 	}
 	
 	private class TableObject {

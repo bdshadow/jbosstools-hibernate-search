@@ -11,12 +11,16 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.hibernate.console.ConsoleConfigClassLoader;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.console.execution.ExecutionContext.Command;
+import org.hibernate.eclipse.console.HibernateConsoleMessages;
+import org.hibernate.eclipse.console.HibernateConsolePlugin;
 import org.hibernate.eclipse.console.utils.ClassLoaderHelper;
 import org.hibernate.eclipse.console.utils.ProjectUtils;
 import org.jboss.tools.hibernate.runtime.spi.IClassMetadata;
@@ -49,7 +53,7 @@ public class IndexRebuildAction extends AbstractHandler {
 				e1.printStackTrace();
 			}
 			
-			if (config.getSessionFactory() == null) {
+			if (config.getSessionFactory() == null && askUserForConfiguration(config.getName())) {
 				if (!config.hasConfiguration()) {
 					config.build();
 				}
@@ -82,5 +86,12 @@ public class IndexRebuildAction extends AbstractHandler {
 
 		}
 		return null;
+	}
+	
+	private boolean askUserForConfiguration(String name) {
+		String out = NLS.bind(HibernateConsoleMessages.AbstractQueryEditor_do_you_want_open_session_factory, name);
+		return MessageDialog.openQuestion( HibernateConsolePlugin.getDefault()
+				.getWorkbench().getActiveWorkbenchWindow().getShell(),
+				HibernateConsoleMessages.AbstractQueryEditor_open_session_factory, out );
 	}
 }

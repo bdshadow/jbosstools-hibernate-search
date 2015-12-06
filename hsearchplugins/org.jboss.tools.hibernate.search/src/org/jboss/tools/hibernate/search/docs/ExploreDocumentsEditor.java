@@ -1,7 +1,6 @@
 package org.jboss.tools.hibernate.search.docs;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,12 +9,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -31,15 +28,12 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
-import org.hibernate.console.ConsoleConfigClassLoader;
 import org.hibernate.console.ConsoleConfiguration;
-import org.hibernate.console.HibernateConsoleRuntimeException;
 import org.hibernate.console.ImageConstants;
 import org.hibernate.console.KnownConfigurations;
-import org.hibernate.eclipse.console.HibernateConsoleMessages;
-import org.hibernate.eclipse.console.HibernateConsolePlugin;
 import org.hibernate.eclipse.console.utils.EclipseImages;
 import org.jboss.tools.hibernate.search.HSearchConsoleConfigurationPreferences;
+import org.jboss.tools.hibernate.search.console.ConsoleConfigurationUtils;
 import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
 
@@ -151,7 +145,7 @@ public class ExploreDocumentsEditor extends EditorPart {
 			public void handleEvent(Event event) {
 				ConsoleConfiguration cc = getConsoleConfiguration();
 				
-				ClassLoader classloader =  getConfigClassLoader();
+				ClassLoader classloader =  ConsoleConfigurationUtils.getClassLoader(cc);
 				
 				Set<Class> classes = new HashSet<Class>();
 				for (Button entityBtn: entityCheckBoxes) {
@@ -181,20 +175,8 @@ public class ExploreDocumentsEditor extends EditorPart {
 		});				
 	}
 	
-	private ClassLoader getConfigClassLoader() {
-		try {
-			Field loaderField = getConsoleConfiguration().getClass().getDeclaredField("classLoader");
-			loaderField.setAccessible(true);
-			return (ConsoleConfigClassLoader)loaderField.get(getConsoleConfiguration());
-			
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
-			// would never happen
-		}
-		return null;
-	}
-	
 	protected void createEntityCheckBoxes(Composite parent) {
-		loadSessionFatory();
+		ConsoleConfigurationUtils.loadSessionFactorySafely(getConsoleConfiguration());
 		
 		Composite entitiesComposite = new Composite(parent, SWT.NONE);
 		entitiesComposite.setLayout(new RowLayout());
@@ -215,7 +197,7 @@ public class ExploreDocumentsEditor extends EditorPart {
 	}
 	
 	private boolean indexed(String entity) {
-		ClassLoader classloader =  getConfigClassLoader();
+		ClassLoader classloader =  ConsoleConfigurationUtils.getClassLoader(getConsoleConfiguration());;
 		try {
 			Annotation[] annotations = Class.forName(entity, true,  classloader).getAnnotations();
 			for (Annotation annotation : annotations) {
@@ -227,16 +209,6 @@ public class ExploreDocumentsEditor extends EditorPart {
 			//
 		}
 		return false;
-	}
-	
-	private void loadSessionFatory() {
-		ConsoleConfiguration config = getConsoleConfiguration();
-		if (config.getSessionFactory() == null) {
-			if (!config.hasConfiguration() && askUserForConfiguration(config.getName())) {
-				config.build();
-			}
-			config.buildSessionFactory();
-		}
 	}
 	
 	protected void createDocTable(Composite parent) {
@@ -295,13 +267,6 @@ public class ExploreDocumentsEditor extends EditorPart {
 	
 	public ConsoleConfiguration getConsoleConfiguration() {
 		return KnownConfigurations.getInstance().find(getConsoleConfigurationName());
-	}
-	
-	private boolean askUserForConfiguration(String name) {
-		String out = NLS.bind(HibernateConsoleMessages.AbstractQueryEditor_do_you_want_open_session_factory, name);
-		return MessageDialog.openQuestion( HibernateConsolePlugin.getDefault()
-				.getWorkbench().getActiveWorkbenchWindow().getShell(),
-				HibernateConsoleMessages.AbstractQueryEditor_open_session_factory, out );
 	}
 	
 	private class TableObject {

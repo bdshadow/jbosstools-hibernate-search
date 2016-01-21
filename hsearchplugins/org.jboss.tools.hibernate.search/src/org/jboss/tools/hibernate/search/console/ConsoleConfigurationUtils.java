@@ -29,6 +29,20 @@ public class ConsoleConfigurationUtils {
 			}
 			cc.buildSessionFactory();
 		}
+		if (cc.getConfiguration().getProperty("hibernate.search.autoregister_listeners") != "true") {
+			
+			String out = NLS.bind("Hiberante search wasn't enabled by default for some reason "
+					+ "(see \"hibernate.search.autoregister_listeners\" property). Some options may not work. "
+					+ "Would you like to enable it and rebuild session factory>", cc.getName());
+			boolean enable = MessageDialog.openQuestion(HibernateConsolePlugin.getDefault()
+				.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enable hibernate search", out);
+			
+			if (enable) {
+				cc.getConfiguration().setProperty("hibernate.search.autoregister_listeners", "true");
+				cc.closeSessionFactory();
+				cc.buildSessionFactory();
+			}
+		}
 	}
 	
 	private static boolean askUserForConfiguration(String name) {

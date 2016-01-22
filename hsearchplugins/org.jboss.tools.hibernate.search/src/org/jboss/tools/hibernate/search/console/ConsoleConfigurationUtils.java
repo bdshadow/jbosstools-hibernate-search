@@ -8,6 +8,7 @@ import org.hibernate.console.ConsoleConfigClassLoader;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.eclipse.console.HibernateConsoleMessages;
 import org.hibernate.eclipse.console.HibernateConsolePlugin;
+import org.jboss.tools.hibernate.search.HibernateSearchConsolePlugin;
 
 public class ConsoleConfigurationUtils {
 	
@@ -33,14 +34,15 @@ public class ConsoleConfigurationUtils {
 			
 			String out = NLS.bind("Hiberante search wasn't enabled by default for some reason "
 					+ "(see \"hibernate.search.autoregister_listeners\" property). Some options may not work. "
-					+ "Would you like to enable it and rebuild session factory>", cc.getName());
+					+ "Would you like to enable it and rebuild the configuration and session factory?", cc.getName());
 			boolean enable = MessageDialog.openQuestion(HibernateConsolePlugin.getDefault()
 				.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enable hibernate search", out);
 			
 			if (enable) {
+				cc.reset();
+				cc.build();
 				cc.getConfiguration().setProperty("hibernate.search.autoregister_listeners", "true");
-				cc.closeSessionFactory();
-				cc.buildSessionFactory();
+				cc.buildSessionFactory();;
 			}
 		}
 	}

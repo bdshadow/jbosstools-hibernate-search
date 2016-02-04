@@ -21,7 +21,7 @@ Also this plugin is an addition to Jboss Tools Hibernate plugin which is license
    </license>
 
    <requires>
-      <import feature="org.hibernate.eclipse.feature" version="5.0.0.qualifier"/>
+      <import feature="org.hibernate.eclipse.feature" version="4.3.0.qualifier" match="greaterOrEqual"/>
    </requires>
 
    <plugin

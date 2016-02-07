@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.jboss.tools.hibernatesearchtools</groupId>
 		<artifactId>hsearchplugins</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 	<groupId>org.jboss.tools.hibernatesearchtools.hsearchplugins</groupId>
 	<artifactId>org.jboss.tools.hibernate.search.runtime.v_4_0</artifactId>

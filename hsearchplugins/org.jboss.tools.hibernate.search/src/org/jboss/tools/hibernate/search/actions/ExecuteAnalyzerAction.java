@@ -21,12 +21,7 @@ public class ExecuteAnalyzerAction extends Action {
 
 	private AnalyzersEditor editor;
 
-	public ExecuteAnalyzerAction() {
-		setImageDescriptor(EclipseImages.getImageDescriptor(ImageConstants.EXECUTE));
-	}
-
 	public ExecuteAnalyzerAction(AnalyzersEditor editor) {
-		this();
 		setEditor(editor);
 	}
 
@@ -44,11 +39,6 @@ public class ExecuteAnalyzerAction extends Action {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public void initTextAndToolTip(String text) {
-		setText(text);
-		setToolTipText(text);
 	}
 
 	public void setEditor(AnalyzersEditor editor) {

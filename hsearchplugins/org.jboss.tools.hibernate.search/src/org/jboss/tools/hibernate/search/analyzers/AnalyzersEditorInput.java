@@ -69,8 +69,8 @@ public class AnalyzersEditorInput implements IStorageEditorInput, IPersistableEl
 		((AnalyzersEditorStorage)getStorage()).setContents(contents);
 	}
 	
-	public void setAnalyzerChosen(String analyzer) {
-		((AnalyzersEditorStorage)getStorage()).setAnalyzerChosen(analyzer);
+	public void setAnalyzerSelected(String analyzer) {
+		((AnalyzersEditorStorage)getStorage()).setAnalyzerSelected(analyzer);
 	}
 
 	@Override

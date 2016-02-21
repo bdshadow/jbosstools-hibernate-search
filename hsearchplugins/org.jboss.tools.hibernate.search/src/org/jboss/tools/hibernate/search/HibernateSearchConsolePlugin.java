@@ -11,26 +11,26 @@ import org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditorInput;
 import org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditorStorage;
 
 public class HibernateSearchConsolePlugin {
-	
+
 	private static HibernateConsolePlugin hibernatePlugin;
 	private static HibernateSearchConsolePlugin plugin;
-	
+
 	private HibernateSearchConsolePlugin() {
 		hibernatePlugin = HibernateConsolePlugin.getDefault();
 		setPlugin(this);
 	}
-	
+
 	public IEditorPart openAnalyzersTestEditor(ConsoleConfiguration cc) {
 		try {
 			IWorkbenchPage page = HibernateConsolePlugin.getActiveWorkbenchWindow().getActivePage();
 			AnalyzersEditorStorage storage = new AnalyzersEditorStorage(cc.getName(), "Analyzers Test", "");
 			AnalyzersEditorInput editorInput = new AnalyzersEditorInput(storage);
-			return page.openEditor(editorInput, "org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditor", true); //$NON-NLS-1$
+			return page.openEditor(editorInput, "org.jboss.tools.hibernate.search.analyzers.AnalyzersEditor", true); //$NON-NLS-1$
 		} catch (PartInitException pie) {
 			return null;
 		}
 	}
-	
+
 	public IEditorPart openExploreDocumentsEditor(ConsoleConfiguration cc) {
 		try {
 			IWorkbenchPage page = HibernateConsolePlugin.getActiveWorkbenchWindow().getActivePage();
@@ -42,20 +42,20 @@ public class HibernateSearchConsolePlugin {
 			return null;
 		}
 	}
-	
+
 	public static HibernateConsolePlugin getHibernateConsolePlugin() {
 		return hibernatePlugin;
 	}
-	
+
 	public static HibernateSearchConsolePlugin getDefault() {
 		if (plugin == null) {
 			return new HibernateSearchConsolePlugin();
 		}
 		return plugin;
 	}
-	
-	private static void setPlugin(HibernateSearchConsolePlugin plugin) {	
+
+	private static void setPlugin(HibernateSearchConsolePlugin plugin) {
 		HibernateSearchConsolePlugin.plugin = plugin;
 	}
-	
+
 }

@@ -80,7 +80,7 @@
       <editor
             class="org.jboss.tools.hibernate.search.analyzers.AnalyzersEditor"
             default="false"
-            id="org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditor"
+            id="org.jboss.tools.hibernate.search.analyzers.AnalyzersEditor"
             name="Analyzers Test">
       </editor>
       <editor

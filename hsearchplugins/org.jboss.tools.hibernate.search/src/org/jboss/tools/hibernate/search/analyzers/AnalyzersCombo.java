@@ -1,4 +1,4 @@
-package org.hibernate.eclipse.console;
+package org.jboss.tools.hibernate.search.analyzers;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,23 +12,28 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.hibernate.eclipse.console.ComboContributionProxy;
+import org.hibernate.eclipse.console.HibernateConsolePlugin;
 import org.hibernate.eclipse.console.utils.LaunchHelper;
 import org.hibernate.eclipse.console.utils.ProjectUtils;
 import org.hibernate.eclipse.launch.IConsoleConfigurationLaunchConstants;
-import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditor;
-import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorInput;
-import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorStorage;
 
-public class AnalyzersCombo extends ComboContribution {
+public class AnalyzersCombo extends ComboContributionProxy {
+	
+	public static final String DEFAULT_ANALYZER = "org.apache.lucene.analysis.standard.StandardAnalyzer";
 
 	protected SelectionAdapter selectionAdapter;
-	private String analyzer = null;
 	private AnalyzersEditor editor = null;
 
-	public AnalyzersCombo(AnalyzersEditor editor, String id) {
+	public AnalyzersCombo(final AnalyzersEditor editor, String id) {
 		super(id);
 		this.editor = editor;
-		setSelectionAdapter();
+		this.selectionAdapter = new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				((AnalyzersEditorStorage)((AnalyzersEditorInput)editor.getEditorInput()).getStorage()).setAnalyzerSelected(comboControl.getText());
+				editor.getExecuteAnalyzerAction().run();
+			}
+		};
 	}
 
 	@Override
@@ -37,7 +42,7 @@ public class AnalyzersCombo extends ComboContribution {
 	}
 
 	@Override
-	void populateComboBox() {
+	protected void populateComboBox() {
 		String projName = null;
 		try {
 			ILaunchConfiguration launchConfiguration = LaunchHelper.findHibernateLaunchConfig(editor.getConsoleConfigurationName());
@@ -74,33 +79,22 @@ public class AnalyzersCombo extends ComboContribution {
 						
 					}
 					comboControl.setItems(typesList.toArray(new String[0]));
-					setItemSelected();
+					setSelected();					
 				} catch (JavaModelException e) {
 					HibernateConsolePlugin.getDefault().log(e);
 				}
-
 			}
-
 		});
 	}
 	
-	protected void setItemSelected() {
-		String analyzerChosen = ((AnalyzersEditorStorage)((AnalyzersEditorInput)editor.getEditorInput()).getStorage()).getAnalyzerChosen();
-		for (int i = 0; i < comboControl.getItemCount(); i++) {
-			if (comboControl.getItem(i).equals(analyzerChosen)) {
-				comboControl.select(i);
-				analyzer = analyzerChosen;
-				return;
-			}
+	protected void setSelected() {
+		String selectedText = ((AnalyzersEditorStorage)((AnalyzersEditorInput)editor.getEditorInput()).getStorage()).getAnalyzerSelected();
+		if (comboControl.indexOf(selectedText) == -1) { // was not recovered from memento
+			comboControl.setText(DEFAULT_ANALYZER);
+		} else {
+			comboControl.setText(selectedText);
+			this.editor.getExecuteAnalyzerAction().run();
 		}
-	}
-
-	protected void setSelectionAdapter() {
-		selectionAdapter = new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				analyzer = getText();
-			}
-		};
 	}
 
 	protected int getComboWidth() {
@@ -108,7 +102,7 @@ public class AnalyzersCombo extends ComboContribution {
 	}
 
 	public String getAnalyzer() {
-		return this.analyzer;
+		return comboControl.getText();
 	}
 
 }

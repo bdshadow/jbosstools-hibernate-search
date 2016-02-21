@@ -23,7 +23,7 @@ public class AnalyzersEditorInputFactory implements IElementFactory {
         String contentString = memento.getString( KEY_STORAGE_CONTENT );
         String configurationName = memento.getString(KEY_CONFIGURATION_NAME);
         AnalyzersEditorStorage storage = new AnalyzersEditorStorage(configurationName, contentName, contentString );
-        storage.setAnalyzerChosen(memento.getString(KEY_STORAGE_ANALYZER));
+        storage.setAnalyzerSelected(memento.getString(KEY_STORAGE_ANALYZER));
         
         AnalyzersEditorInput analyzersInput = new AnalyzersEditorInput( storage );
         return analyzersInput; 
@@ -44,7 +44,7 @@ public class AnalyzersEditorInputFactory implements IElementFactory {
                 AnalyzersEditorStorage analyzersEditorStorage = (AnalyzersEditorStorage) storage;
                 storageContent = analyzersEditorStorage.getContentsString();
                 configurationName = analyzersEditorStorage.getConsoleConfiguration();
-                analyzer = analyzersEditorStorage.getAnalyzerChosen();
+                analyzer = analyzersEditorStorage.getAnalyzerSelected();
             }
         }
      

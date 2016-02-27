@@ -27,17 +27,29 @@
                label="Index Rebuild"
                style="push">
                <visibleWhen>
-               <with
-                  variable="selection">
-               <iterate
-                     ifEmpty="false"
-                     operator="or">
-                  <instanceof
-                        value="org.hibernate.console.ConsoleConfiguration">
-                  </instanceof>
-               </iterate>
-            </with>
-            </visibleWhen>
+	                  <with
+	                        variable="selection">
+	                        <or>
+			                     <and>
+				                     <adapt type="org.eclipse.jface.viewers.ITreeSelection">
+								         <test property="org.jboss.tools.hibernate.search.isSameConfig" value="true"/>
+								     </adapt>
+								     <iterate
+			                              ifEmpty="false">
+			                           <instanceof
+			                                 value="org.jboss.tools.hibernate.runtime.spi.IPersistentClass">
+			                           </instanceof>
+			                        </iterate>
+								 </and>
+		                        <iterate 
+		                        	  ifEmpty="false">
+		                           <instanceof
+		                                 value="org.hibernate.console.ConsoleConfiguration">
+		                           </instanceof>
+		                        </iterate>
+	                     	</or>
+	                  </with>
+               </visibleWhen>
          </command>
          <command
                commandId="org.jboss.tools.hibernate.search.actions.exploredocs"
@@ -118,5 +130,15 @@
             class="org.jboss.tools.hibernate.search.actions.ExploreDocumentsAction"
             commandId="org.jboss.tools.hibernate.search.actions.exploredocs">
       </handler>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="org.jboss.tools.hibernate.search.OneParentConfigPropertyTester"
+            id="org.jboss.tools.hibernate.search.OneParentConfigPropertyTester"
+            namespace="org.jboss.tools.hibernate.search"
+            properties="isSameConfig"
+            type="org.eclipse.jface.viewers.ITreeSelection">
+      </propertyTester>
    </extension>
 </fragment>

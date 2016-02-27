@@ -32,14 +32,14 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 		try {
 			SessionFactoryImpl factory = (SessionFactoryImpl) ((IFacade) sessionFactory).getTarget();
 			FullTextSession fullTextSession = Search.getFullTextSession(factory.openSession());
-			fullTextSession.createIndexer(/*entities.toArray(new Class[0])*/).startAndWait();
+			fullTextSession.createIndexer(entities.toArray(new Class[0])).startAndWait();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public String doAnalyze(String text, String analyzerClassName) {
 		Analyzer analyzer = null;
@@ -48,7 +48,7 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 			for (Constructor constructor : analyzerClass.getConstructors()) {
 				if (constructor.getParameterTypes().length == 0) {
 					constructor.setAccessible(true);
-					analyzer = (Analyzer) constructor.newInstance(null);
+					analyzer = (Analyzer) constructor.newInstance();
 					break;
 				}
 				if (constructor.getParameterTypes().length == 1 && constructor.getParameterTypes()[0].equals(Version.class)) {

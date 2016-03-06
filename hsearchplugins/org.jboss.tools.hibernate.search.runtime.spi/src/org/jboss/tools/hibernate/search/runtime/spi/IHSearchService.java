@@ -14,4 +14,6 @@ public interface IHSearchService extends IService {
 	String doAnalyze(String text, String analyzerClassName);
 
 	List <Map<String, String>> getEntityDocuments(ISessionFactory sessionFactory, Class... entities);
+	
+	Set<Class<?>> getIndexedTypes(ISessionFactory sessionFactory);
 }

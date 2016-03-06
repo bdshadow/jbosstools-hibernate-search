@@ -5,10 +5,12 @@ import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -20,6 +22,7 @@ import org.apache.lucene.util.Version;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.hibernate.search.SearchFactory;
 import org.jboss.tools.hibernate.runtime.common.IFacade;
 import org.jboss.tools.hibernate.runtime.spi.ISessionFactory;
 import org.jboss.tools.hibernate.runtime.v_4_3.internal.ServiceImpl;
@@ -86,9 +89,7 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 	@Override
 	public List<Map<String, String>> getEntityDocuments(ISessionFactory sessionFactory, Class... entities) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		SessionFactoryImpl factory = (SessionFactoryImpl) ((IFacade) sessionFactory).getTarget();
-		FullTextSession fullTextSession = Search.getFullTextSession(factory.openSession());
-		IndexReader ireader = fullTextSession.getSearchFactory().getIndexReaderAccessor().open(entities);
+		IndexReader ireader = getSearchFactory(sessionFactory).getIndexReaderAccessor().open(entities);
 
 		for (int i = 0; i < ireader.numDocs(); i++) {
 			try {
@@ -103,17 +104,27 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 				e.printStackTrace();
 			}
 		}
-//		try {
-//			Document doc = DirectoryReader.open(FSDirectory.open(new File(indexPath))).document(0);
-//			for (IndexableField field: doc.getFields()) {
-//				fieldValueMap.put(field.stringValue(), doc.get(field.stringValue()));
-//			}
-//			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		return list;
+	}
+
+	@Override
+	public Set<Class<?>> getIndexedTypes(ISessionFactory sessionFactory) {
+		Set<Class<?>> indexedTypes = new TreeSet<Class<?>>(new Comparator<Class<?>>() {
+
+			@Override
+			public int compare(Class<?> o1, Class<?> o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+			
+		});
+		indexedTypes.addAll(getSearchFactory(sessionFactory).getIndexedTypes());
+		return indexedTypes;
+	}
+	
+	private SearchFactory getSearchFactory(ISessionFactory sessionFactory) {
+		SessionFactoryImpl factory = (SessionFactoryImpl) ((IFacade) sessionFactory).getTarget();
+		FullTextSession fullTextSession = Search.getFullTextSession(factory.openSession());
+		return fullTextSession.getSearchFactory();
 	}
 
 }

@@ -34,7 +34,7 @@ public class HibernateSearchConsolePlugin {
 	public IEditorPart openExploreDocumentsEditor(ConsoleConfiguration cc) {
 		try {
 			IWorkbenchPage page = HibernateConsolePlugin.getActiveWorkbenchWindow().getActivePage();
-			ExploreDocumentsEditorStorage storage = new ExploreDocumentsEditorStorage(cc.getName(), "Lucene Documents");
+			ExploreDocumentsEditorStorage storage = new ExploreDocumentsEditorStorage(cc.getName(), "Index Documents");
 			ExploreDocumentsEditorInput input = new ExploreDocumentsEditorInput(storage);
 			return page.openEditor(input, "org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditor", true); //$NON-NLS-1$
 		} catch (PartInitException e) {

@@ -8,11 +8,11 @@ import org.hibernate.console.ConsoleConfigClassLoader;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.eclipse.console.HibernateConsoleMessages;
 import org.hibernate.eclipse.console.HibernateConsolePlugin;
-import org.jboss.tools.hibernate.search.HibernateSearchConsolePlugin;
 
 public class ConsoleConfigurationUtils {
 	
 	public static ClassLoader getClassLoader(ConsoleConfiguration cc) {
+//		return ClassLoaderHelper.getProjectClassLoader(ProjectUtils.findJavaProject(cc)); //doesn't work
 		try {
 			Field loaderField = cc.getClass().getDeclaredField("classLoader");
 			loaderField.setAccessible(true);

@@ -2,13 +2,16 @@ package org.jboss.tools.hibernate.search;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -20,7 +23,9 @@ import org.apache.lucene.util.Version;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.hibernate.search.annotations.Indexed;
 import org.jboss.tools.hibernate.runtime.common.IFacade;
+import org.jboss.tools.hibernate.runtime.spi.IClassMetadata;
 import org.jboss.tools.hibernate.runtime.spi.ISessionFactory;
 import org.jboss.tools.hibernate.runtime.v_4_0.internal.ServiceImpl;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
@@ -103,17 +108,24 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 				e.printStackTrace();
 			}
 		}
-//		try {
-//			Document doc = DirectoryReader.open(FSDirectory.open(new File(indexPath))).document(0);
-//			for (IndexableField field: doc.getFields()) {
-//				fieldValueMap.put(field.stringValue(), doc.get(field.stringValue()));
-//			}
-//			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		return list;
+	}
+	
+	@Override
+	public Set<Class<?>> getIndexedTypes(ISessionFactory sessionFactory) {
+		Map<String, IClassMetadata> meta = sessionFactory.getAllClassMetadata();
+		Set<Class<?>> entities = new HashSet<Class<?>>();
+		for (String entity : new TreeSet<String>(meta.keySet())) {
+			Class<?> entityClass = meta.get(entity).getMappedClass();
+			Annotation[] annotations = entityClass.getAnnotations();
+			for (Annotation annotation: annotations) {
+				if (Indexed.class.isAssignableFrom(annotation.annotationType())) {
+					entities.add(entityClass);
+					break;
+				}
+			}
+		}
+		return entities;
 	}
 
 }

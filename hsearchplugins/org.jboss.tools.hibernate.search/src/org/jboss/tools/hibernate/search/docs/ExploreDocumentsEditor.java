@@ -57,7 +57,7 @@ public class ExploreDocumentsEditor extends EditorPart {
 
 	@Override
 	public void doSaveAs() {
-		// TODO Auto-generated method stub
+		// isSaveAsAllowed = false
 
 	}
 
@@ -176,18 +176,15 @@ public class ExploreDocumentsEditor extends EditorPart {
 	}
 	
 	protected void createEntityCheckBoxes(Composite parent) {
-		ConsoleConfigurationUtils.loadSessionFactorySafely(getConsoleConfiguration());
+		ConsoleConfiguration consoleConfig = getConsoleConfiguration();
+		ConsoleConfigurationUtils.loadSessionFactorySafely(consoleConfig);
 		
 		Composite entitiesComposite = new Composite(parent, SWT.NONE);
 		entitiesComposite.setLayout(new RowLayout());
 
-		Set<String> entities = new TreeSet<String>(getConsoleConfiguration().getSessionFactory().getAllClassMetadata().keySet());
-		for (String entity: entities) {
-			if (!indexed(entity)) {
-				continue;
-			}
+		for (Class<?> entity: getIndexedEntities(consoleConfig)) {
 			Button button = new Button(entitiesComposite, SWT.CHECK);
-			button.setText(entity);
+			button.setText(entity.getName());
 			this.entityCheckBoxes.add(button);
 		}
 		if (this.entityCheckBoxes.isEmpty()) {
@@ -196,19 +193,9 @@ public class ExploreDocumentsEditor extends EditorPart {
 		entitiesComposite.pack();
 	}
 	
-	private boolean indexed(String entity) {
-		ClassLoader classloader =  ConsoleConfigurationUtils.getClassLoader(getConsoleConfiguration());;
-		try {
-			Annotation[] annotations = Class.forName(entity, true,  classloader).getAnnotations();
-			for (Annotation annotation : annotations) {
-				if ("org.hibernate.search.annotations.Indexed".equals(annotation.annotationType().getName())){
-					return true;
-				}
-			}
-		} catch (ClassNotFoundException e) {
-			//
-		}
-		return false;
+	private Set<Class<?>> getIndexedEntities(ConsoleConfiguration consoleConfig) {
+		IHSearchService service = HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(consoleConfig.getName()));
+		return service.getIndexedTypes(consoleConfig.getSessionFactory());
 	}
 	
 	protected void createDocTable(Composite parent) {

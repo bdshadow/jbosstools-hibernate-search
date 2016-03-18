@@ -23,28 +23,37 @@ public class ConsoleConfigurationUtils {
 		}
 	}
 	
-	public static void loadSessionFactorySafely(ConsoleConfiguration cc) {
-		if (cc.getSessionFactory() == null) {
-			if (!cc.hasConfiguration() && askUserForConfiguration(cc.getName())) {
-				cc.build();
+	public static boolean loadSessionFactorySafely(ConsoleConfiguration cc) {
+		try {
+			if (cc.getSessionFactory() == null) {
+				if (!cc.hasConfiguration() && askUserForConfiguration(cc.getName())) {
+					cc.build();
+				}
+				cc.buildSessionFactory();
 			}
-			cc.buildSessionFactory();
-		}
-		if (cc.getConfiguration().getProperty("hibernate.search.autoregister_listeners") != "true") {
-			
-			String out = NLS.bind("Hiberante search wasn't enabled by default for some reason "
-					+ "(see \"hibernate.search.autoregister_listeners\" property). Some options may not work. "
-					+ "Would you like to enable it and rebuild the configuration and session factory?", cc.getName());
-			boolean enable = MessageDialog.openQuestion(HibernateConsolePlugin.getDefault()
-				.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enable hibernate search", out);
-			
-			if (enable) {
-				cc.reset();
-				cc.build();
-				cc.getConfiguration().setProperty("hibernate.search.autoregister_listeners", "true");
-				cc.buildSessionFactory();;
+			if (cc.getConfiguration().getProperty("hibernate.search.autoregister_listeners") != "true") {
+				
+				String out = NLS.bind("Hiberante search wasn't enabled by default for some reason "
+						+ "(see \"hibernate.search.autoregister_listeners\" property). Some options may not work. "
+						+ "Would you like to enable it and rebuild the configuration and session factory?", cc.getName());
+				boolean enable = MessageDialog.openQuestion(HibernateConsolePlugin.getDefault()
+					.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enable hibernate search", out);
+				
+				if (enable) {
+					cc.reset();
+					cc.build();
+					cc.getConfiguration().setProperty("hibernate.search.autoregister_listeners", "true");
+					cc.buildSessionFactory();;
+				}
 			}
+		} catch (Exception e) {
+			MessageDialog.openError(HibernateConsolePlugin.getDefault()
+					.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+					"Loading session failed", 
+					e.getMessage() + "\n" + e.getCause().getMessage());
+			return false;
 		}
+		return true;
 	}
 	
 	private static boolean askUserForConfiguration(String name) {

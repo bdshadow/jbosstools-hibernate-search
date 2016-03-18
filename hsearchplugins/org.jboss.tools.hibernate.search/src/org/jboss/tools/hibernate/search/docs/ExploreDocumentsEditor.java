@@ -1,12 +1,10 @@
 package org.jboss.tools.hibernate.search.docs;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -177,7 +175,9 @@ public class ExploreDocumentsEditor extends EditorPart {
 	
 	protected void createEntityCheckBoxes(Composite parent) {
 		ConsoleConfiguration consoleConfig = getConsoleConfiguration();
-		ConsoleConfigurationUtils.loadSessionFactorySafely(consoleConfig);
+		if (!ConsoleConfigurationUtils.loadSessionFactorySafely(consoleConfig)) {
+			return;
+		};
 		
 		Composite entitiesComposite = new Composite(parent, SWT.NONE);
 		entitiesComposite.setLayout(new RowLayout());

@@ -48,14 +48,17 @@ public class IndexRebuildAction extends AbstractHandler {
 	protected void indexRebuildForConfiguration(Iterator<ConsoleConfiguration> consoleConfigs) {
 		while (consoleConfigs.hasNext()) {
 			final ConsoleConfiguration consoleConfig = consoleConfigs.next();
-			ConsoleConfigurationUtils.loadSessionFactorySafely(consoleConfig);
-			run(consoleConfig, Collections.EMPTY_SET);
+			if (ConsoleConfigurationUtils.loadSessionFactorySafely(consoleConfig)) {
+				run(consoleConfig, Collections.EMPTY_SET);
+			}
 		}
 	}
 	
 	@SuppressWarnings("rawtypes")
 	protected void indexRebuildForPersistentClass(ConsoleConfiguration consoleConfig, Iterator<IPersistentClass> persistClasses) {
-		ConsoleConfigurationUtils.loadSessionFactorySafely(consoleConfig);
+		if (!ConsoleConfigurationUtils.loadSessionFactorySafely(consoleConfig)) {
+			return;
+		};
 		ClassLoader classloader = ConsoleConfigurationUtils.getClassLoader(consoleConfig);
 		final Set<Class> classes = new HashSet<Class>();
 		try {

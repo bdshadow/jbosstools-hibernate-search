@@ -13,8 +13,7 @@ Export-Package: org.hibernate.eclipse.console,
  org.jboss.tools.hibernate.search.docs,
  org.jboss.tools.hibernate.search.docs.actions,
  org.jboss.tools.hibernate.search.views
-Require-Bundle: org.jboss.tools.hibernate.search.runtime.spi;bundle-version="2.0.0",
+Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.ui.console,
- org.eclipse.jdt.core
-Bundle-ActivationPolicy: lazy
+ org.jboss.tools.hibernate.search.runtime.spi;bundle-version="2.0.0"
 Bundle-ClassPath: org.jboss.tools.hibernate.search.jar

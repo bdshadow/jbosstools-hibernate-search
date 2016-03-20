@@ -14,4 +14,4 @@ Bundle-ClassPath: .,
  lib/avro-1.5.1.jar,
  lib/jackson-core-asl-1.7.3.jar,
  lib/jackson-mapper-asl-1.7.3.jar
-Require-Bundle: org.jboss.tools.hibernate.search.runtime.spi;bundle-version="1.0.0"
+Require-Bundle: org.jboss.tools.hibernate.search.runtime.spi;bundle-version="2.0.0"

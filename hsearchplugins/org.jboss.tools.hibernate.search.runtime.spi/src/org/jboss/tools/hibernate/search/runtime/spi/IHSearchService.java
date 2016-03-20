@@ -7,7 +7,7 @@ import java.util.Set;
 import org.jboss.tools.hibernate.runtime.spi.IService;
 import org.jboss.tools.hibernate.runtime.spi.ISessionFactory;
 
-public interface IHSearchService extends IService {
+public interface IHSearchService {
 
 	void newIndexRebuild(ISessionFactory sessionFactory, Set<Class> entities);
 	
@@ -16,4 +16,6 @@ public interface IHSearchService extends IService {
 	List <Map<String, String>> getEntityDocuments(ISessionFactory sessionFactory, Class... entities);
 	
 	Set<Class<?>> getIndexedTypes(ISessionFactory sessionFactory);
+	
+	IService getHibernateService();
 }

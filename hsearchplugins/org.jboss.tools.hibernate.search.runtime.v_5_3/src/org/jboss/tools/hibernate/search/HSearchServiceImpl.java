@@ -2,11 +2,10 @@ package org.jboss.tools.hibernate.search;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,20 +16,26 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.util.Version;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.SearchFactory;
 import org.jboss.tools.hibernate.runtime.common.IFacade;
-import org.jboss.tools.hibernate.runtime.spi.IClassMetadata;
+import org.jboss.tools.hibernate.runtime.spi.IService;
 import org.jboss.tools.hibernate.runtime.spi.ISessionFactory;
-import org.jboss.tools.hibernate.runtime.v_4_0.internal.ServiceImpl;
+import org.jboss.tools.hibernate.runtime.spi.ServiceLookup;
+import org.jboss.tools.hibernate.runtime.v_4_3.internal.ServiceImpl;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
 
-public class HSearchServiceProxy extends ServiceImpl implements IHSearchService {
+public class HSearchServiceImpl implements IHSearchService {
+	
+	@Override
+	public IService getHibernateService() {
+		return ServiceLookup.findService("4.3");
+	}
 
 	@Override
 	public void newIndexRebuild(ISessionFactory sessionFactory, Set<Class> entities) {
@@ -58,7 +63,7 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 				}
 				if (constructor.getParameterTypes().length == 1 && constructor.getParameterTypes()[0].equals(Version.class)) {
 					constructor.setAccessible(true);
-					Version luceneVersion = Version.LUCENE_34;
+					Version luceneVersion = Version.LUCENE_4_10_4;
 					analyzer = (Analyzer) constructor.newInstance(luceneVersion);
 					break;
 				}
@@ -91,15 +96,13 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 	@Override
 	public List<Map<String, String>> getEntityDocuments(ISessionFactory sessionFactory, Class... entities) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		SessionFactoryImpl factory = (SessionFactoryImpl) ((IFacade) sessionFactory).getTarget();
-		FullTextSession fullTextSession = Search.getFullTextSession(factory.openSession());
-		IndexReader ireader = fullTextSession.getSearchFactory().getIndexReaderAccessor().open(entities);
+		IndexReader ireader = getSearchFactory(sessionFactory).getIndexReaderAccessor().open(entities);
 
 		for (int i = 0; i < ireader.numDocs(); i++) {
 			try {
 				Document doc = ireader.document(i);
 				Map<String, String> fieldValueMap = new TreeMap<String, String>();
-				for (Fieldable field: doc.getFields()) {
+				for (IndexableField field: doc.getFields()) {
 					fieldValueMap.put(field.name(), field.stringValue());
 				}
 				list.add(fieldValueMap);
@@ -110,22 +113,25 @@ public class HSearchServiceProxy extends ServiceImpl implements IHSearchService 
 		}
 		return list;
 	}
-	
+
 	@Override
 	public Set<Class<?>> getIndexedTypes(ISessionFactory sessionFactory) {
-		Map<String, IClassMetadata> meta = sessionFactory.getAllClassMetadata();
-		Set<Class<?>> entities = new HashSet<Class<?>>();
-		for (String entity : new TreeSet<String>(meta.keySet())) {
-			Class<?> entityClass = meta.get(entity).getMappedClass();
-			Annotation[] annotations = entityClass.getAnnotations();
-			for (Annotation annotation: annotations) {
-				if (Indexed.class.isAssignableFrom(annotation.annotationType())) {
-					entities.add(entityClass);
-					break;
-				}
+		Set<Class<?>> indexedTypes = new TreeSet<Class<?>>(new Comparator<Class<?>>() {
+
+			@Override
+			public int compare(Class<?> o1, Class<?> o2) {
+				return o1.getName().compareTo(o2.getName());
 			}
-		}
-		return entities;
+			
+		});
+		indexedTypes.addAll(getSearchFactory(sessionFactory).getIndexedTypes());
+		return indexedTypes;
+	}
+	
+	private SearchFactory getSearchFactory(ISessionFactory sessionFactory) {
+		SessionFactoryImpl factory = (SessionFactoryImpl) ((IFacade) sessionFactory).getTarget();
+		FullTextSession fullTextSession = Search.getFullTextSession(factory.openSession());
+		return fullTextSession.getSearchFactory();
 	}
 
 }

@@ -8,7 +8,7 @@ import org.hibernate.console.KnownConfigurations;
 
 public class HSearchConsoleConfigurationPreferences {
 	
-	private static final String DEFAULT_HIBERNATE_SEARCH_VERSION = "4.0";
+	private static final String DEFAULT_HIBERNATE_SEARCH_VERSION = "4.3";
 	
 	//map, containing mapping between hibernate and hiberante-search verisions
 	private static final Map<String, String> versionsMap  = new HashMap<String, String>() {
@@ -16,6 +16,7 @@ public class HSearchConsoleConfigurationPreferences {
 			put("4.0", "4.0");
 			put("4.3", "5.3");
 			put("5.0", "5.5");
+			put("5.1", "5.5.1");
 		}		
 	}; 
 

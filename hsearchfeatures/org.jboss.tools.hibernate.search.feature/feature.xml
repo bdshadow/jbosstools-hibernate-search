@@ -30,6 +30,7 @@ Also this plugin is an addition to Jboss Tools Hibernate plugin which is license
       <import plugin="org.jboss.tools.hibernate.runtime.v_4_3" version="4.3.0.qualifier" match="greaterOrEqual"/>
       <import feature="org.hibernate.eclipse.feature" version="4.3.0.qualifier" match="greaterOrEqual"/>
       <import plugin="org.jboss.tools.hibernate.runtime.v_5_0"/>
+      <import plugin="org.jboss.tools.hibernate.runtime.v_5_1"/>
    </requires>
 
    <plugin
@@ -65,6 +66,14 @@ Also this plugin is an addition to Jboss Tools Hibernate plugin which is license
 
    <plugin
          id="org.jboss.tools.hibernate.search.runtime.v_5_5"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.jboss.tools.hibernate.search.runtime.v_5_5.1"
          download-size="0"
          install-size="0"
          version="0.0.0"

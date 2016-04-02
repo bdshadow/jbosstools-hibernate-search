@@ -15,6 +15,7 @@ public class HSearchConsoleConfigurationPreferences {
 		{
 			put("4.0", "4.0");
 			put("4.3", "5.3");
+			put("5.0", "5.5");
 		}		
 	}; 
 

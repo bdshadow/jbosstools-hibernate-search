@@ -23,17 +23,11 @@ public class AnalyzersCombo extends ComboContributionProxy {
 	public static final String DEFAULT_ANALYZER = "org.apache.lucene.analysis.standard.StandardAnalyzer";
 
 	protected SelectionAdapter selectionAdapter;
-	private AnalyzersEditor editor = null;
+	private String consoleConfigName;
 
-	public AnalyzersCombo(final AnalyzersEditor editor, String id) {
+	public AnalyzersCombo(String consoleConfigName, String id) {
 		super(id);
-		this.editor = editor;
-		this.selectionAdapter = new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				((AnalyzersEditorStorage)((AnalyzersEditorInput)editor.getEditorInput()).getStorage()).setAnalyzerSelected(comboControl.getText());
-				editor.getExecuteAnalyzerAction().run();
-			}
-		};
+		this.consoleConfigName = consoleConfigName;
 	}
 
 	@Override
@@ -45,7 +39,7 @@ public class AnalyzersCombo extends ComboContributionProxy {
 	protected void populateComboBox() {
 		String projName = null;
 		try {
-			ILaunchConfiguration launchConfiguration = LaunchHelper.findHibernateLaunchConfig(editor.getConsoleConfigurationName());
+			ILaunchConfiguration launchConfiguration = LaunchHelper.findHibernateLaunchConfig(this.consoleConfigName);
 			projName = launchConfiguration.getAttribute(IConsoleConfigurationLaunchConstants.PROJECT_NAME, ""); //$NON-NLS-1$
 		} catch (CoreException e) {
 			HibernateConsolePlugin.getDefault().log(e);
@@ -78,23 +72,13 @@ public class AnalyzersCombo extends ComboContributionProxy {
 						}
 						
 					}
-					comboControl.setItems(typesList.toArray(new String[0]));
-					setSelected();					
+					comboControl.setItems(typesList.toArray(new String[0]));		
+					comboControl.setText(DEFAULT_ANALYZER);
 				} catch (JavaModelException e) {
 					HibernateConsolePlugin.getDefault().log(e);
 				}
 			}
 		});
-	}
-	
-	protected void setSelected() {
-		String selectedText = ((AnalyzersEditorStorage)((AnalyzersEditorInput)editor.getEditorInput()).getStorage()).getAnalyzerSelected();
-		if (comboControl.indexOf(selectedText) == -1) { // was not recovered from memento
-			comboControl.setText(DEFAULT_ANALYZER);
-		} else {
-			comboControl.setText(selectedText);
-			this.editor.getExecuteAnalyzerAction().run();
-		}
 	}
 
 	protected int getComboWidth() {

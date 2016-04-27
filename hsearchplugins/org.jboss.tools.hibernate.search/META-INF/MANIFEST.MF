@@ -8,11 +8,12 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: bdshadow
 Export-Package: org.hibernate.eclipse.console,
  org.jboss.tools.hibernate.search,
- org.jboss.tools.hibernate.search.actions,
- org.jboss.tools.hibernate.search.analyzers,
- org.jboss.tools.hibernate.search.docs,
- org.jboss.tools.hibernate.search.docs.actions,
- org.jboss.tools.hibernate.search.views
+ org.jboss.tools.hibernate.search.console,
+ org.jboss.tools.hibernate.search.handler,
+ org.jboss.tools.hibernate.search.toolkit;uses:="org.hibernate.eclipse.console",
+ org.jboss.tools.hibernate.search.toolkit.analyzers;uses:="org.hibernate.eclipse.console",
+ org.jboss.tools.hibernate.search.toolkit.docs,
+ org.jboss.tools.hibernate.search.toolkit.docs.action
 Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.ui.console,
  org.jboss.tools.hibernate.search.runtime.spi;bundle-version="2.0.0"

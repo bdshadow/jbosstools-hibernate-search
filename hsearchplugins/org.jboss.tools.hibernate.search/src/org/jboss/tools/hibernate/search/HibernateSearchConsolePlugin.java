@@ -1,14 +1,11 @@
 package org.jboss.tools.hibernate.search;
 
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.eclipse.console.HibernateConsolePlugin;
-import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorInput;
-import org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorStorage;
-import org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditorInput;
-import org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditorStorage;
+import org.jboss.tools.hibernate.search.toolkit.IndexToolkitView;
 
 public class HibernateSearchConsolePlugin {
 
@@ -20,27 +17,17 @@ public class HibernateSearchConsolePlugin {
 		setPlugin(this);
 	}
 
-	public IEditorPart openAnalyzersTestEditor(ConsoleConfiguration cc) {
+	
+	public IViewPart showIndexToolkitView(ConsoleConfiguration cc) {
 		try {
 			IWorkbenchPage page = HibernateConsolePlugin.getActiveWorkbenchWindow().getActivePage();
-			AnalyzersEditorStorage storage = new AnalyzersEditorStorage(cc.getName(), "Analyzers Test", "");
-			AnalyzersEditorInput editorInput = new AnalyzersEditorInput(storage);
-			return page.openEditor(editorInput, "org.jboss.tools.hibernate.search.analyzers.AnalyzersEditor", true); //$NON-NLS-1$
-		} catch (PartInitException pie) {
-			return null;
-		}
-	}
-
-	public IEditorPart openExploreDocumentsEditor(ConsoleConfiguration cc) {
-		try {
-			IWorkbenchPage page = HibernateConsolePlugin.getActiveWorkbenchWindow().getActivePage();
-			ExploreDocumentsEditorStorage storage = new ExploreDocumentsEditorStorage(cc.getName(), "Index Documents");
-			ExploreDocumentsEditorInput input = new ExploreDocumentsEditorInput(storage);
-			return page.openEditor(input, "org.jboss.tools.hibernate.search.docs.ExploreDocumentsEditor", true); //$NON-NLS-1$
+			IndexToolkitView indexToolkitView = (IndexToolkitView)page.showView(IndexToolkitView.INDEX_TOOLKIT_VIEW_ID);
+			indexToolkitView.setInitialConsoleConfig(cc);
+			return indexToolkitView;
 		} catch (PartInitException e) {
 			e.printStackTrace();
 			return null;
-		}
+		}		
 	}
 
 	public static HibernateConsolePlugin getHibernateConsolePlugin() {

@@ -4,9 +4,14 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.jboss.tools.hibernate.search.actions.IndexRebuildAction"
+            defaultHandler="org.jboss.tools.hibernate.search.handler.IndexRebuildHandler"
             id="org.jboss.tools.hibernate.search.actions.indexrebuild"
             name="IndexRebuildAction">
+      </command>
+      <command
+            defaultHandler="org.jboss.tools.hibernate.search.handler.IndexToolkitViewLaunchHandler"
+            id="org.jboss.tools.hibernate.search.toolkit.IndexToolkitViewLaunchHandler"
+            name="Open Index Toolkit">
       </command>
    </extension>
    <extension
@@ -43,20 +48,30 @@
 	                  </with>
                </visibleWhen>
          </command>
+         <command
+               commandId="org.jboss.tools.hibernate.search.toolkit.IndexToolkitViewLaunchHandler"
+               label="Open Index Toolkit"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="selection">
+                     <count value="1"/>
+	                  <iterate
+	                           ifEmpty="false">
+	                        <instanceof
+	                              value="org.hibernate.console.ConsoleConfiguration">
+	                        </instanceof>
+	                     </iterate>
+               </with>
+            </visibleWhen>
+         </command>
       </menuContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.elementFactories">
-      <factory
-            class="org.jboss.tools.hibernate.search.analyzers.AnalyzersEditorInputFactory"
-            id="org.jboss.tools.hibernate.search.analyzers.AnalyzersTestEditorInputFactory">
-      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.views">iew>
       <view
             category="hibernatecategory"
-            class="org.jboss.tools.hibernate.search.IndexToolkitView"
+            class="org.jboss.tools.hibernate.search.toolkit.IndexToolkitView"
             id="org.jboss.tools.hibernate.search.IndexToolkitView"
             name="Index Toolkit"
             restorable="true">

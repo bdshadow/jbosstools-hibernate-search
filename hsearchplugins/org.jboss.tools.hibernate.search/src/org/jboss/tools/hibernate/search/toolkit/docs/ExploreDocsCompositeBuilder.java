@@ -1,17 +1,18 @@
-package org.jboss.tools.hibernate.search.docs;
+package org.jboss.tools.hibernate.search.toolkit.docs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -22,75 +23,54 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.EditorPart;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.console.ImageConstants;
-import org.hibernate.console.KnownConfigurations;
 import org.hibernate.eclipse.console.utils.EclipseImages;
 import org.jboss.tools.hibernate.search.HSearchConsoleConfigurationPreferences;
 import org.jboss.tools.hibernate.search.console.ConsoleConfigurationUtils;
 import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
 
-public class ExploreDocumentsEditor extends EditorPart {
+public class ExploreDocsCompositeBuilder {
+	
+	private static ExploreDocsCompositeBuilder instance;
+	private static final Map<String, Composite> consoleConfigTab = new HashMap<String, Composite>();
 	
 	private TableViewer tableViewer;
-	
 	private Set<Button> entityCheckBoxes = new HashSet<Button>();
 	private List<Map<String, String>> docs = new ArrayList<Map<String, String>>();
 	private Label docNumberLbl;
 
-	public ExploreDocumentsEditor() {
-		super();
-	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void doSaveAs() {
-		// isSaveAsAllowed = false
-
-	}
-
-	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		setInput(input);
-		setSite(site);
-	}
-
-	@Override
-	public boolean isDirty() {
-		return false;
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
-
-	@Override
-	public void createPartControl(Composite parent) {
-		parent.setLayout(new GridLayout(1, true));
-		createOperatingConrols(parent);
-		createDocTable(parent);   
-	}
-	
-	private void tableInsert(Map<String, String> map) {
-		this.tableViewer.getTable().removeAll();
-		for (String field: map.keySet()) {
-			this.tableViewer.add(new TableObject(field, map.get(field)));
+	public static ExploreDocsCompositeBuilder getInstance() {
+		if (instance == null) {
+			return instance = new ExploreDocsCompositeBuilder();
 		}
+		return instance;
 	}
 	
-	protected void createOperatingConrols(Composite parent) {
-		createEntityCheckBoxes(parent);
+	public Composite getTab(CTabFolder folder, ConsoleConfiguration consoleConfig) {
+		final String consoleConfigName = consoleConfig.getName();
+		if (consoleConfigTab.containsKey(consoleConfigName)) {
+			return consoleConfigTab.get(consoleConfigName);
+		}
+		Composite newTab = createTab(folder, consoleConfig);
+		consoleConfigTab.put(consoleConfigName, newTab);
+		return newTab;
+	}
+	
+	protected Composite createTab(CTabFolder folder, ConsoleConfiguration consoleConfig) {
+		Composite container = new Composite(folder, SWT.TOP);
+		
+		container.setLayout(new GridLayout(1, true));
+		createOperatingConrols(container, consoleConfig);
+		createDocTable(container);   
+		
+		container.update();
+		return container;
+	}
+	
+	protected void createOperatingConrols(Composite parent, final ConsoleConfiguration consoleConfig) {
+		createEntityCheckBoxes(parent, consoleConfig);
 		
 		Composite block = new Composite(parent, SWT.NONE);
 		block.setLayout(new RowLayout());
@@ -140,10 +120,8 @@ public class ExploreDocumentsEditor extends EditorPart {
 		execButton.addListener(SWT.Selection, new Listener() {
 
 			@Override
-			public void handleEvent(Event event) {
-				ConsoleConfiguration cc = getConsoleConfiguration();
-				
-				ClassLoader classloader =  ConsoleConfigurationUtils.getClassLoader(cc);
+			public void handleEvent(Event event) {				
+				ClassLoader classloader =  ConsoleConfigurationUtils.getClassLoader(consoleConfig);
 				
 				Set<Class> classes = new HashSet<Class>();
 				for (Button entityBtn: entityCheckBoxes) {
@@ -158,8 +136,8 @@ public class ExploreDocumentsEditor extends EditorPart {
 				if (classes.isEmpty()) {
 					return;
 				}
-				IHSearchService service = HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(cc.getName()));
-				docs = service.getEntityDocuments(cc.getSessionFactory(), classes.toArray(new Class[0]));
+				IHSearchService service = HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(consoleConfig.getName()));
+				docs = service.getEntityDocuments(consoleConfig.getSessionFactory(), classes.toArray(new Class[0]));
 				if (docs.isEmpty()) {
 					tableViewer.getTable().removeAll();
 					tableViewer.add(new TableObject("No Lucene index found", ""));
@@ -173,8 +151,14 @@ public class ExploreDocumentsEditor extends EditorPart {
 		});				
 	}
 	
-	protected void createEntityCheckBoxes(Composite parent) {
-		ConsoleConfiguration consoleConfig = getConsoleConfiguration();
+	private void tableInsert(Map<String, String> map) {
+		this.tableViewer.getTable().removeAll();
+		for (String field: map.keySet()) {
+			this.tableViewer.add(new TableObject(field, map.get(field)));
+		}
+	}
+	
+	protected void createEntityCheckBoxes(Composite parent, ConsoleConfiguration consoleConfig) {
 		if (!ConsoleConfigurationUtils.loadSessionFactorySafely(consoleConfig)) {
 			return;
 		};
@@ -242,21 +226,8 @@ public class ExploreDocumentsEditor extends EditorPart {
 		column.setResizable(true);
 		return viewerColumn;
 	}
-
-	@Override
-	public void setFocus() {
-		tableViewer.getControl().setFocus();
-	}
 	
-	public String getConsoleConfigurationName() {
-		return ((ExploreDocumentsEditorStorage)((ExploreDocumentsEditorInput)this.getEditorInput()).getStorage()).getConsoleConfiguration();
-	}
-	
-	public ConsoleConfiguration getConsoleConfiguration() {
-		return KnownConfigurations.getInstance().find(getConsoleConfigurationName());
-	}
-	
-	private class TableObject {
+	private static class TableObject {
 		private String field;
 		private String value;
 		public TableObject(String field, String value) {

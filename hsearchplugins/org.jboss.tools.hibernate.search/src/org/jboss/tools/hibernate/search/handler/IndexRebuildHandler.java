@@ -1,4 +1,4 @@
-package org.jboss.tools.hibernate.search.actions;
+package org.jboss.tools.hibernate.search.handler;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,7 +24,7 @@ import org.jboss.tools.hibernate.search.console.ConsoleConfigurationUtils;
 import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
 
-public class IndexRebuildAction extends AbstractHandler {
+public class IndexRebuildHandler extends AbstractHandler {
 
 	@SuppressWarnings("unchecked")
 	@Override

@@ -4,7 +4,7 @@ Bundle-Name: Jbosstools-hibernate-search
 Bundle-SymbolicName: org.jboss.tools.hibernate.search;singleton:=true
 Bundle-Version: 2.0.0.qualifier
 Fragment-Host: org.hibernate.eclipse.console;bundle-version="4.3.0.qualifier"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: bdshadow
 Export-Package: org.hibernate.eclipse.console,
  org.jboss.tools.hibernate.search,

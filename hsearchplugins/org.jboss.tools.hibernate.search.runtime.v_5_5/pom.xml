@@ -67,6 +67,11 @@
 							<artifactId>lucene-queries</artifactId>
 							<version>${lucene.version}</version>
 						</artifactItem>
+						<artifactItem>
+							<groupId>org.apache.lucene</groupId>
+						    <artifactId>lucene-queryparser</artifactId>
+						    <version>${lucene.version}</version>
+						</artifactItem>
 					</artifactItems>
 					<skip>false</skip>
 					<outputDirectory>${basedir}/lib</outputDirectory>

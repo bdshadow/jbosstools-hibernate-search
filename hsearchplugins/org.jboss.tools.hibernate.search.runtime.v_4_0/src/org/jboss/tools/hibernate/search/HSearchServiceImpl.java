@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +20,11 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexReader.FieldOption;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.util.Version;
+import org.hibernate.Query;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -29,7 +34,6 @@ import org.jboss.tools.hibernate.runtime.spi.IClassMetadata;
 import org.jboss.tools.hibernate.runtime.spi.IService;
 import org.jboss.tools.hibernate.runtime.spi.ISessionFactory;
 import org.jboss.tools.hibernate.runtime.spi.ServiceLookup;
-import org.jboss.tools.hibernate.runtime.v_4_0.internal.ServiceImpl;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
 
 public class HSearchServiceImpl implements IHSearchService {
@@ -98,9 +102,7 @@ public class HSearchServiceImpl implements IHSearchService {
 	@Override
 	public List<Map<String, String>> getEntityDocuments(ISessionFactory sessionFactory, Class... entities) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		SessionFactoryImpl factory = (SessionFactoryImpl) ((IFacade) sessionFactory).getTarget();
-		FullTextSession fullTextSession = Search.getFullTextSession(factory.openSession());
-		IndexReader ireader = fullTextSession.getSearchFactory().getIndexReaderAccessor().open(entities);
+		IndexReader ireader = getIndexReader(sessionFactory, entities);
 
 		for (int i = 0; i < ireader.numDocs(); i++) {
 			try {
@@ -134,5 +136,33 @@ public class HSearchServiceImpl implements IHSearchService {
 		}
 		return entities;
 	}
-
+	
+	public Set<String> getIndexedFields(ISessionFactory sessionFactory, Class<?> entity) {
+		final Set<String> fields = new TreeSet<String>();
+		IndexReader ireader = getIndexReader(sessionFactory, entity);
+		Iterator<String> iterator = ireader.getFieldNames(FieldOption.INDEXED).iterator();
+		iterator.forEachRemaining(s -> fields.add(s));
+		return fields;
+	}
+	
+	private FullTextSession getFullTextSession(ISessionFactory sessionFactory) {
+		SessionFactoryImpl factory = (SessionFactoryImpl) ((IFacade) sessionFactory).getTarget();
+		return Search.getFullTextSession(factory.openSession());
+	}
+	
+	private IndexReader getIndexReader(ISessionFactory sessionFactory, Class<?>... classes) {
+		return getFullTextSession(sessionFactory).getSearchFactory().getIndexReaderAccessor().open(classes);
+	}
+	
+	@Override
+	public void search(ISessionFactory sessionFactory, String defaultField, String analyzer, String request) {
+		FullTextSession session = getFullTextSession(sessionFactory);
+		QueryParser parser = new QueryParser(Version.LUCENE_34, defaultField, session.getSearchFactory().getAnalyzer(analyzer));
+		org.apache.lucene.search.Query luceneQuery = null;
+		try {
+			luceneQuery = parser.parse(request);
+		} catch (ParseException e) {
+		}
+		Query fullTextQuery = session.createFullTextQuery(luceneQuery);
+	}
 }

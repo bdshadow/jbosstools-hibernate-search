@@ -166,7 +166,7 @@ public class ExploreDocsCompositeBuilder {
 		Composite entitiesComposite = new Composite(parent, SWT.NONE);
 		entitiesComposite.setLayout(new RowLayout());
 
-		for (Class<?> entity: getIndexedEntities(consoleConfig)) {
+		for (Class<?> entity: ConsoleConfigurationUtils.getIndexedEntities(consoleConfig)) {
 			Button button = new Button(entitiesComposite, SWT.CHECK);
 			button.setText(entity.getName());
 			this.entityCheckBoxes.add(button);
@@ -175,11 +175,6 @@ public class ExploreDocsCompositeBuilder {
 			new Label(entitiesComposite, SWT.NONE).setText("No entity classes anntotated @Indexed");
 		}
 		entitiesComposite.pack();
-	}
-	
-	private Set<Class<?>> getIndexedEntities(ConsoleConfiguration consoleConfig) {
-		IHSearchService service = HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(consoleConfig.getName()));
-		return service.getIndexedTypes(consoleConfig.getSessionFactory());
 	}
 	
 	protected void createDocTable(Composite parent) {

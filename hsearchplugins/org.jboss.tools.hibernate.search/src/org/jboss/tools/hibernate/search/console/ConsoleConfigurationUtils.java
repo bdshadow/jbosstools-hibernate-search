@@ -1,6 +1,7 @@
 package org.jboss.tools.hibernate.search.console;
 
 import java.lang.reflect.Field;
+import java.util.Set;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -8,6 +9,9 @@ import org.hibernate.console.ConsoleConfigClassLoader;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.eclipse.console.HibernateConsoleMessages;
 import org.hibernate.eclipse.console.HibernateConsolePlugin;
+import org.jboss.tools.hibernate.search.HSearchConsoleConfigurationPreferences;
+import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
+import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
 
 public class ConsoleConfigurationUtils {
 	
@@ -61,5 +65,14 @@ public class ConsoleConfigurationUtils {
 		return MessageDialog.openQuestion( HibernateConsolePlugin.getDefault()
 				.getWorkbench().getActiveWorkbenchWindow().getShell(),
 				HibernateConsoleMessages.AbstractQueryEditor_open_session_factory, out );
+	}
+	
+	public static IHSearchService getHSearchService(ConsoleConfiguration consoleConfig) {
+		return HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(consoleConfig.getName()));
+	}
+	
+	public static Set<Class<?>> getIndexedEntities(ConsoleConfiguration consoleConfig) {
+		IHSearchService service = getHSearchService(consoleConfig);
+		return service.getIndexedTypes(consoleConfig.getSessionFactory());
 	}
 }

@@ -21,5 +21,5 @@ public interface IHSearchService {
 	
 	Set<String> getIndexedFields(ISessionFactory sessionFactory, Class<?> entity);
 	
-	void search(ISessionFactory sessionFactory, String defaultField, String analyzer, String request);
+	List<Object> search(ISessionFactory sessionFactory, String defaultField, String analyzer, String request);
 }

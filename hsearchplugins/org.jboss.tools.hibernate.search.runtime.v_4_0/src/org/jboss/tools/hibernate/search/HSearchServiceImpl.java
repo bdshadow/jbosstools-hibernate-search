@@ -58,25 +58,8 @@ public class HSearchServiceImpl implements IHSearchService {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public String doAnalyze(String text, String analyzerClassName) {
-		Analyzer analyzer = null;
-		try {
-			Class analyzerClass = Class.forName(analyzerClassName);
-			for (Constructor constructor : analyzerClass.getConstructors()) {
-				if (constructor.getParameterTypes().length == 0) {
-					constructor.setAccessible(true);
-					analyzer = (Analyzer) constructor.newInstance();
-					break;
-				}
-				if (constructor.getParameterTypes().length == 1 && constructor.getParameterTypes()[0].equals(Version.class)) {
-					constructor.setAccessible(true);
-					Version luceneVersion = Version.LUCENE_34;
-					analyzer = (Analyzer) constructor.newInstance(luceneVersion);
-					break;
-				}
-			}
-			
-		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+		Analyzer analyzer = getAnalyzerByName(analyzerClassName);
+		if (analyzer == null) {
 			return "";
 		}
 
@@ -96,7 +79,27 @@ public class HSearchServiceImpl implements IHSearchService {
 			e.printStackTrace();
 			return "";
 		}
-		
+	}
+	
+	private Analyzer getAnalyzerByName(String analyzerClassName) {
+		try {
+			Class<?> analyzerClass = Class.forName(analyzerClassName);
+			for (Constructor<?> constructor : analyzerClass.getConstructors()) {
+				if (constructor.getParameterTypes().length == 0) {
+					constructor.setAccessible(true);
+					return (Analyzer) constructor.newInstance();
+				}
+				if (constructor.getParameterTypes().length == 1 && constructor.getParameterTypes()[0].equals(Version.class)) {
+					constructor.setAccessible(true);
+					Version luceneVersion = Version.LUCENE_34;
+					return (Analyzer) constructor.newInstance(luceneVersion);
+				}
+			}
+			
+		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
@@ -155,14 +158,15 @@ public class HSearchServiceImpl implements IHSearchService {
 	}
 	
 	@Override
-	public void search(ISessionFactory sessionFactory, String defaultField, String analyzer, String request) {
+	public List<Object> search(ISessionFactory sessionFactory, String defaultField, String analyzer, String request) {
 		FullTextSession session = getFullTextSession(sessionFactory);
-		QueryParser parser = new QueryParser(Version.LUCENE_34, defaultField, session.getSearchFactory().getAnalyzer(analyzer));
+		QueryParser parser = new QueryParser(Version.LUCENE_34, defaultField, getAnalyzerByName(analyzer));
 		org.apache.lucene.search.Query luceneQuery = null;
 		try {
 			luceneQuery = parser.parse(request);
 		} catch (ParseException e) {
 		}
 		Query fullTextQuery = session.createFullTextQuery(luceneQuery);
+		return fullTextQuery.list();
 	}
 }

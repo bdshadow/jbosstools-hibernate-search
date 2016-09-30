@@ -1,7 +1,6 @@
 package org.jboss.tools.hibernate.search.toolkit.docs;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,35 +29,25 @@ import org.jboss.tools.hibernate.search.HSearchConsoleConfigurationPreferences;
 import org.jboss.tools.hibernate.search.console.ConsoleConfigurationUtils;
 import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
 import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
+import org.jboss.tools.hibernate.search.toolkit.AbstractTabBuilder;
 
-public class ExploreDocsCompositeBuilder {
+public class ExploreDocsTabBuilder extends AbstractTabBuilder {
 	
-	private static ExploreDocsCompositeBuilder instance;
-	private static final Map<String, Composite> consoleConfigTab = new HashMap<String, Composite>();
+	private static class SignletonHolder {
+		private static final ExploreDocsTabBuilder instance = new ExploreDocsTabBuilder();
+	}
+	
+	public static ExploreDocsTabBuilder getInstance() {
+		return SignletonHolder.instance;
+	}
 	
 	private TableViewer tableViewer;
 	private Set<Button> entityCheckBoxes = new HashSet<Button>();
 	private List<Map<String, String>> docs = new ArrayList<Map<String, String>>();
 	private Label docNumberLbl;
 
-	public static ExploreDocsCompositeBuilder getInstance() {
-		if (instance == null) {
-			return instance = new ExploreDocsCompositeBuilder();
-		}
-		return instance;
-	}
 	
-	public Composite getTab(CTabFolder folder, ConsoleConfiguration consoleConfig) {
-		final String consoleConfigName = consoleConfig.getName();
-		if (consoleConfigTab.containsKey(consoleConfigName)) {
-			return consoleConfigTab.get(consoleConfigName);
-		}
-		Composite newTab = createTab(folder, consoleConfig);
-		consoleConfigTab.put(consoleConfigName, newTab);
-		return newTab;
-	}
-	
-	protected Composite createTab(CTabFolder folder, ConsoleConfiguration consoleConfig) {
+	protected Composite buildTab(CTabFolder folder, ConsoleConfiguration consoleConfig) {
 		Composite container = new Composite(folder, SWT.TOP);
 		
 		container.setLayout(new GridLayout(1, true));
@@ -242,5 +231,4 @@ public class ExploreDocsCompositeBuilder {
 			this.value = value;
 		}
 	}
-
 }

@@ -9,33 +9,29 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.hibernate.eclipse.console.ComboContributionProxy;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
 import org.hibernate.eclipse.console.HibernateConsolePlugin;
 import org.hibernate.eclipse.console.utils.LaunchHelper;
 import org.hibernate.eclipse.console.utils.ProjectUtils;
 import org.hibernate.eclipse.launch.IConsoleConfigurationLaunchConstants;
 
-public class AnalyzersCombo extends ComboContributionProxy {
+public class AnalyzersCombo {
 	
+	protected Combo comboControl;
 	public static final String DEFAULT_ANALYZER = "org.apache.lucene.analysis.standard.StandardAnalyzer";
 
-	protected SelectionAdapter selectionAdapter;
 	private String consoleConfigName;
 
-	public AnalyzersCombo(String consoleConfigName, String id) {
-		super(id);
+	public AnalyzersCombo(Composite parent, GridData layout, String consoleConfigName) {
 		this.consoleConfigName = consoleConfigName;
+		this.comboControl = new Combo(parent, SWT.READ_ONLY);
+		this.comboControl.setLayoutData(layout);
+		populateComboBox();
 	}
 
-	@Override
-	protected SelectionListener getSelectionAdapter() {
-		return selectionAdapter;
-	}
-
-	@Override
 	protected void populateComboBox() {
 		String projName = null;
 		try {
@@ -81,12 +77,7 @@ public class AnalyzersCombo extends ComboContributionProxy {
 		});
 	}
 
-	protected int getComboWidth() {
-		return 300;
-	}
-
 	public String getAnalyzer() {
 		return comboControl.getText();
 	}
-
 }

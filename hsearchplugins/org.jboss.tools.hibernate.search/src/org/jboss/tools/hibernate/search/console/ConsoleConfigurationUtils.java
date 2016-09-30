@@ -16,7 +16,6 @@ import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
 public class ConsoleConfigurationUtils {
 	
 	public static ClassLoader getClassLoader(ConsoleConfiguration cc) {
-//		return ClassLoaderHelper.getProjectClassLoader(ProjectUtils.findJavaProject(cc)); //doesn't work
 		try {
 			Field loaderField = cc.getClass().getDeclaredField("classLoader");
 			loaderField.setAccessible(true);
@@ -54,7 +53,7 @@ public class ConsoleConfigurationUtils {
 			MessageDialog.openError(HibernateConsolePlugin.getDefault()
 					.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 					"Loading session failed", 
-					e.getMessage() + "\n" + e.getCause().getMessage());
+					e.getMessage() + (e.getCause() == null ? "" : "\n" + e.getCause().getMessage()));
 			return false;
 		}
 		return true;

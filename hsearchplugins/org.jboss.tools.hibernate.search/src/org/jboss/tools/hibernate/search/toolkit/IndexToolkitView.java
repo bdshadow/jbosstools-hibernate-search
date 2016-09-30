@@ -12,9 +12,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.console.KnownConfigurations;
-import org.jboss.tools.hibernate.search.toolkit.analyzers.AnalyzersCompositeBuilder;
-import org.jboss.tools.hibernate.search.toolkit.docs.ExploreDocsCompositeBuilder;
-import org.jboss.tools.hibernate.search.toolkit.search.SearchCompositeBuilder;
+import org.jboss.tools.hibernate.search.toolkit.analyzers.AnalyzersTabBuilder;
+import org.jboss.tools.hibernate.search.toolkit.docs.ExploreDocsTabBuilder;
+import org.jboss.tools.hibernate.search.toolkit.search.SearchTabBuilder;
 
 public class IndexToolkitView extends ViewPart {
 	
@@ -44,17 +44,17 @@ public class IndexToolkitView extends ViewPart {
 		
 		final CTabItem analyzersTab = new CTabItem(folder, SWT.NONE);
 		analyzersTab.setText(ANALYZERS_TAB_NAME);	
-		final AnalyzersCompositeBuilder analyzersBuilder = AnalyzersCompositeBuilder.getInstance();
+		final AnalyzersTabBuilder analyzersBuilder = AnalyzersTabBuilder.getInstance();
 		analyzersTab.setControl(analyzersBuilder.getTab(folder, consoleConfig));
 		
 		final CTabItem exploreDocsTab = new CTabItem(folder, SWT.NONE);
 		exploreDocsTab.setText(EXPLORE_DOCS_TAB_NAME);
-		final ExploreDocsCompositeBuilder exploreDocsBuilder = ExploreDocsCompositeBuilder.getInstance();
-		exploreDocsTab.setControl(exploreDocsBuilder.getTab(folder, consoleConfig));
+		final ExploreDocsTabBuilder exploreDocsBuilder = ExploreDocsTabBuilder.getInstance();
+		exploreDocsTab.setControl(exploreDocsBuilder.getTab(folder, consoleConfig));		
 		
 		final CTabItem searchTab = new CTabItem(folder, SWT.NONE);
 		searchTab.setText(SEARCH_TAB_NAME);
-		final SearchCompositeBuilder searchBuilder = SearchCompositeBuilder.getInstance();
+		final SearchTabBuilder searchBuilder = SearchTabBuilder.getInstance();
 		searchTab.setControl(searchBuilder.getTab(folder, consoleConfig));
 			
 		folder.setSelection(0);
@@ -79,9 +79,16 @@ public class IndexToolkitView extends ViewPart {
 	}
 
 	@Override
+	public void dispose() {
+		AnalyzersTabBuilder.getInstance().disposeAll();
+		ExploreDocsTabBuilder.getInstance().disposeAll();
+		SearchTabBuilder.getInstance().disposeAll();
+	}
+
+	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

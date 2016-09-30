@@ -74,7 +74,7 @@
             class="org.jboss.tools.hibernate.search.toolkit.IndexToolkitView"
             id="org.jboss.tools.hibernate.search.IndexToolkitView"
             name="Index Toolkit"
-            restorable="true">
+            restorable="false">
       </view>
    </extension>
    <extension

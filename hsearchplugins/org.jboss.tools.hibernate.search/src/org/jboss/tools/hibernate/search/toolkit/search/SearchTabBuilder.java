@@ -1,58 +1,45 @@
 package org.jboss.tools.hibernate.search.toolkit.search;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
 import org.hibernate.console.ConsoleConfiguration;
+import org.jboss.tools.hibernate.search.HSearchConsoleConfigurationPreferences;
 import org.jboss.tools.hibernate.search.console.ConsoleConfigurationUtils;
+import org.jboss.tools.hibernate.search.runtime.spi.HSearchServiceLookup;
+import org.jboss.tools.hibernate.search.runtime.spi.IHSearchService;
+import org.jboss.tools.hibernate.search.toolkit.AbstractTabBuilder;
 import org.jboss.tools.hibernate.search.toolkit.analyzers.AnalyzersCombo;
 
-public class SearchCompositeBuilder {
+public class SearchTabBuilder extends AbstractTabBuilder {
 	
-	private static final Map<String, Composite> consoleConfigTab = new HashMap<String, Composite>();
+	private static class SignletonHolder {
+		private static final SearchTabBuilder instance = new SearchTabBuilder();
+	}
 	
-	private static SearchCompositeBuilder instance;
+	public static SearchTabBuilder getInstance() {
+		return SignletonHolder.instance;
+	}
 	
 	private AnalyzersCombo analyzersCombo;
-	
 	private Combo entityCombo;
 	private Combo fieldsCombo;
+	private SearchResultTable resultTable;
 	
-	public static SearchCompositeBuilder getInstance() {
-		if (instance == null) {
-			return instance = new SearchCompositeBuilder();
-		}
-		return instance;
-	}
-	
-	public Composite getTab(CTabFolder folder, ConsoleConfiguration consoleConfig) {
-		final String consoleConfigName = consoleConfig.getName();
-		if (consoleConfigTab.containsKey(consoleConfigName)) {
-			return consoleConfigTab.get(consoleConfigName);
-		}
-		Composite newTab = createTab(folder, consoleConfig);
-		consoleConfigTab.put(consoleConfigName, newTab);
-		return newTab;
-	}
-	
-	protected Composite createTab(CTabFolder folder, ConsoleConfiguration consoleConfig) {
+	protected Composite buildTab(CTabFolder folder, ConsoleConfiguration consoleConfig) {
 		final String consoleConfigName = consoleConfig.getName();
 		Composite container = new Composite(folder, SWT.VERTICAL);
 		container.setLayout(new GridLayout());
@@ -71,30 +58,26 @@ public class SearchCompositeBuilder {
 		queryGridData.verticalSpan = 2;
 		query.setLayoutData(queryGridData);
 		
-		ToolBar bar = new ToolBar(searchDataComposite, SWT.HORIZONTAL);
-		GridData barGridData = new GridData(GridData.FILL, GridData.VERTICAL_ALIGN_BEGINNING, true, false);
-		bar.setLayoutData(barGridData);
-		ToolBarManager tbm = new ToolBarManager(bar);
-		analyzersCombo = new AnalyzersCombo(consoleConfigName, "analyzersForSearch");
-		tbm.add(analyzersCombo);
-		tbm.update(true);
+		analyzersCombo = new AnalyzersCombo(searchDataComposite, new GridData(), consoleConfigName);
 		
 		Button searchButton = new Button(searchDataComposite, SWT.PUSH);
 		searchButton.setText("Search");
-		searchButton.addSelectionListener(new SelectionListener() {
-			
+		searchButton.addListener(SWT.Selection, new Listener() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-								
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
+			public void handleEvent(Event event) {
+				IHSearchService service = HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(consoleConfigName));
+				resultTable.showResults(
+						service.search(
+								consoleConfig.getSessionFactory(), 
+								fieldsCombo.getText(), 
+								analyzersCombo.getAnalyzer(), 
+								query.getText()),
+						consoleConfig.getSessionFactory().getAllClassMetadata().get(entityCombo.getText()));
 			}
 		});
 		searchDataComposite.pack();
+
+		this.resultTable = new SearchResultTable(container, consoleConfig);
 		
 		container.pack();
 		container.update();
@@ -108,7 +91,7 @@ public class SearchCompositeBuilder {
 		
 		Composite entitiesComposite = new Composite(parent, SWT.NONE);
 		entitiesComposite.setLayout(new RowLayout());
-		this.entityCombo = new Combo(entitiesComposite, SWT.NONE);
+		this.entityCombo = new Combo(entitiesComposite, SWT.NONE|SWT.READ_ONLY);
 		
 		for (Class<?> entity: ConsoleConfigurationUtils.getIndexedEntities(consoleConfig)) {
 			entityCombo.add(entity.getName());
@@ -119,7 +102,7 @@ public class SearchCompositeBuilder {
 			return;
 		}
 		
-		this.fieldsCombo = new Combo(entitiesComposite, SWT.NONE);
+		this.fieldsCombo = new Combo(entitiesComposite, SWT.NONE|SWT.READ_ONLY);
 		
 		this.entityCombo.addModifyListener(new ModifyListener() {
 			
@@ -131,7 +114,7 @@ public class SearchCompositeBuilder {
 					Class<?> clazz = Class.forName(((Combo)e.getSource()).getText(), true, classloader);
 					Set<String> fields = ConsoleConfigurationUtils.getHSearchService(consoleConfig)
 							.getIndexedFields(consoleConfig.getSessionFactory(), clazz);
-					fields.forEach(s -> fieldsCombo.add(s));
+					fields.stream().filter(s -> !"_hibernate_class".equals(s)).forEach(s -> fieldsCombo.add(s));
 					fieldsCombo.select(0);
 				} catch (ClassNotFoundException e1) {
 					e1.printStackTrace();
@@ -141,5 +124,4 @@ public class SearchCompositeBuilder {
 		entityCombo.select(0);
 		entitiesComposite.pack();	
 	}
-
 }

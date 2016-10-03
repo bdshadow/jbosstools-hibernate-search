@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Hibernate Search Runtime 5.3 Tests
-Bundle-SymbolicName: org.jboss.tools.hibernate.search.runtime.v_5_3.test
-Bundle-Version: 2.0.0.qualifier
-Fragment-Host: org.jboss.tools.hibernate.runtime.v_4_3;bundle-version="4.3.0.qualifier"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.junit;bundle-version="4.11.0"

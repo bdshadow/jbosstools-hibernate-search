@@ -3,8 +3,13 @@ package org.jboss.tools.hibernate.search.console;
 import java.lang.reflect.Field;
 import java.util.Set;
 
+import org.eclipse.datatools.connectivity.IConnection;
+import org.eclipse.datatools.connectivity.IConnectionProfile;
+import org.eclipse.datatools.connectivity.ProfileManager;
+import org.eclipse.datatools.connectivity.ui.PingJob;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.PlatformUI;
 import org.hibernate.console.ConsoleConfigClassLoader;
 import org.hibernate.console.ConsoleConfiguration;
 import org.hibernate.eclipse.console.HibernateConsoleMessages;
@@ -28,13 +33,13 @@ public class ConsoleConfigurationUtils {
 	
 	public static boolean loadSessionFactorySafely(ConsoleConfiguration cc) {
 		try {
-			if (cc.getSessionFactory() == null) {
+			if (cc.getSessionFactory() == null && isConnectionExist(cc)) {
 				if (!cc.hasConfiguration() && askUserForConfiguration(cc.getName())) {
 					cc.build();
 				}
 				cc.buildSessionFactory();
 			}
-			if (cc.getConfiguration().getProperty("hibernate.search.autoregister_listeners") != "true") {
+			if (!"true".equals(cc.getConfiguration().getProperty("hibernate.search.autoregister_listeners"))) {
 				
 				String out = NLS.bind("Hiberante search wasn't enabled by default for some reason "
 						+ "(see \"hibernate.search.autoregister_listeners\" property). Some options may not work. "
@@ -74,4 +79,18 @@ public class ConsoleConfigurationUtils {
 		IHSearchService service = getHSearchService(consoleConfig);
 		return service.getIndexedTypes(consoleConfig.getSessionFactory());
 	}
+	
+	public static boolean isConnectionExist(ConsoleConfiguration consoleConfig) {
+		String connProfileName = consoleConfig.getPreferences().getConnectionProfileName();
+		IConnectionProfile profile = ProfileManager.getInstance().getProfileByName(connProfileName);
+		IConnection conn = PingJob.createTestConnection(profile);
+		if (conn.getConnectException() != null) {
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Establishing connection to database error",
+					conn.getConnectException().getLocalizedMessage());
+			return false;
+		}
+		return true;
+	}
+
 }

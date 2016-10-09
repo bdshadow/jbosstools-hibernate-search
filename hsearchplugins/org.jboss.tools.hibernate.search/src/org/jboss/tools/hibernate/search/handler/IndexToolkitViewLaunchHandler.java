@@ -9,6 +9,7 @@ import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.hibernate.console.ConsoleConfiguration;
 import org.jboss.tools.hibernate.search.HibernateSearchConsolePlugin;
+import org.jboss.tools.hibernate.search.console.ConsoleConfigurationUtils;
 
 public class IndexToolkitViewLaunchHandler implements IHandler {
 	
@@ -20,7 +21,10 @@ public class IndexToolkitViewLaunchHandler implements IHandler {
 		}
 		ITreeSelection selection = (ITreeSelection) sel;
 		if (selection.getFirstElement() instanceof ConsoleConfiguration) {
-			HibernateSearchConsolePlugin.getDefault().showIndexToolkitView((ConsoleConfiguration)selection.getFirstElement());
+			ConsoleConfiguration consoleConfig = (ConsoleConfiguration)selection.getFirstElement();
+			if (ConsoleConfigurationUtils.isConnectionExist(consoleConfig)) {
+				HibernateSearchConsolePlugin.getDefault().showIndexToolkitView(consoleConfig);
+			}
 		}
 		return null;
 	}

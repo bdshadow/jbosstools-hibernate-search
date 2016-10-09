@@ -151,7 +151,7 @@ public class HSearchServiceImpl implements IHSearchService {
 	}
 	
 	@Override
-	public List<Object> search(ISessionFactory sessionFactory, String defaultField, String analyzer, String request) {
+	public List<Object> search(ISessionFactory sessionFactory, Class<?> entity, String defaultField, String analyzer, String request) {
 		FullTextSession session = getFullTextSession(sessionFactory);
 		QueryParser parser = new QueryParser(defaultField, getAnalyzerByName(analyzer));
 		org.apache.lucene.search.Query luceneQuery = null;
@@ -159,7 +159,10 @@ public class HSearchServiceImpl implements IHSearchService {
 			luceneQuery = parser.parse(request);
 		} catch (ParseException e) {
 		}
-		Query fullTextQuery = session.createFullTextQuery(luceneQuery);
+		Query fullTextQuery = 
+				entity == null ? 
+						session.createFullTextQuery(luceneQuery) : 
+							session.createFullTextQuery(luceneQuery, entity);
 		return fullTextQuery.list();
 	}
 }

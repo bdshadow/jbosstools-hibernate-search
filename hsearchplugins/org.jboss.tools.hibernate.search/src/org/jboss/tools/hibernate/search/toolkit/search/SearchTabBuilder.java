@@ -65,10 +65,18 @@ public class SearchTabBuilder extends AbstractTabBuilder {
 		searchButton.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
+				ClassLoader classloader =  ConsoleConfigurationUtils.getClassLoader(consoleConfig);
+				Class<?> entity = null;
+				try {
+					entity = Class.forName(entityCombo.getText(), true, classloader);
+				} catch (ClassNotFoundException e) {
+					entity = null;
+				}
 				IHSearchService service = HSearchServiceLookup.findService(HSearchConsoleConfigurationPreferences.getHSearchVersion(consoleConfigName));
 				resultTable.showResults(
 						service.search(
 								consoleConfig.getSessionFactory(), 
+								entity,
 								fieldsCombo.getText(), 
 								analyzersCombo.getAnalyzer(), 
 								query.getText()),
@@ -101,6 +109,9 @@ public class SearchTabBuilder extends AbstractTabBuilder {
 			new Label(entitiesComposite, SWT.NONE).setText("No entity classes anntotated @Indexed");
 			return;
 		}
+		
+		Label defaultFieldLabel = new Label(entitiesComposite, SWT.CENTER);
+		defaultFieldLabel.setText("Default field:");
 		
 		this.fieldsCombo = new Combo(entitiesComposite, SWT.NONE|SWT.READ_ONLY);
 		

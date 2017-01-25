@@ -1,21 +1,23 @@
 package org.jboss.tools.hibernate.search.toolkit;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
 import org.hibernate.console.ConsoleConfiguration;
-import org.hibernate.eclipse.console.ComboContributionProxy;
 import org.hibernate.eclipse.console.utils.LaunchHelper;
 
-public class ConfigurationCombo extends ComboContributionProxy {
+public class ConfigurationCombo {
 	
+	protected Combo comboControl;
 	private String consoleConfigName;
 
-	public ConfigurationCombo(String consoleConfigName, String id) {
-		super(id);
-		this.consoleConfigName = consoleConfigName;	
+	public ConfigurationCombo(Composite parent, String consoleConfigName) {
+		this.consoleConfigName = consoleConfigName;
+		this.comboControl = new Combo(parent, SWT.READ_ONLY);
+		populateComboBox();
 	}
 
-	@Override
 	protected void populateComboBox() {
 		ConsoleConfiguration[] configurations = LaunchHelper.findFilteredSortedConsoleConfigs();
 		final String[] names = new String[configurations.length];
@@ -31,20 +33,11 @@ public class ConfigurationCombo extends ComboContributionProxy {
 	}
 	
 	public String getConsoleConfigSelected() {
-		return getText();
+		return comboControl.getText();
 	}
 	
 	public void setConsoleConfigSelected(String consoleConfigName) {
 		comboControl.setText(consoleConfigName);
-	}
-
-	@Override
-	protected SelectionListener getSelectionAdapter() {
-		return null;
-	}
-
-	protected int getComboWidth() {
-		return 150;
 	}
 	
 	public void addModifyListener(ModifyListener modifyListener) {

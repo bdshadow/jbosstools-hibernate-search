@@ -21,16 +21,24 @@ Also this plugin is an addition to Jboss Tools Hibernate plugin which is license
    </license>
 
    <requires>
+      <import plugin="org.eclipse.core.runtime" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.hibernate.eclipse.console" version="4.3.0.qualifier" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.jboss.tools.hibernate.runtime.spi" version="4.3.0.qualifier" match="greaterOrEqual"/>
-      <import plugin="org.jboss.tools.hibernate.runtime.v_4_0" version="4.3.0.qualifier" match="greaterOrEqual"/>
-      <import plugin="org.jboss.tools.hibernate.runtime.v_4_3" version="4.3.0.qualifier" match="greaterOrEqual"/>
-      <import feature="org.hibernate.eclipse.feature" version="4.3.0.qualifier" match="greaterOrEqual"/>
-      <import plugin="org.jboss.tools.hibernate.runtime.v_5_0"/>
-      <import plugin="org.jboss.tools.hibernate.runtime.v_5_1"/>
+      <import plugin="org.eclipse.datatools.connectivity"/>
+      <import plugin="org.hibernate.eclipse"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.datatools.connectivity.ui"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.hibernate.eclipse.console" version="5.1.2" match="greaterOrEqual"/>
+      <import plugin="org.jboss.tools.hibernate.runtime.spi" version="5.1.2" match="greaterOrEqual"/>
+      <import plugin="org.jboss.tools.hibernate.runtime.v_4_0" version="5.1.2.qualifier" match="greaterOrEqual"/>
+      <import plugin="org.jboss.tools.hibernate.runtime.v_4_3" version="5.1.2.qualifier" match="greaterOrEqual"/>
+      <import plugin="org.jboss.tools.hibernate.runtime.v_5_0" version="5.1.2.qualifier" match="greaterOrEqual"/>
+      <import plugin="org.jboss.tools.hibernate.runtime.v_5_1" version="5.1.2.qualifier" match="greaterOrEqual"/>
+      <import plugin="org.jboss.tools.hibernate.runtime.common" version="5.1.2" match="greaterOrEqual"/>
+      <import feature="org.hibernate.eclipse.feature" version="5.1.2.qualifier" match="greaterOrEqual"/>
+      <import plugin="org.jboss.tools.hibernate.runtime.v_5_2" version="5.1.2.qualifier" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -38,7 +46,6 @@ Also this plugin is an addition to Jboss Tools Hibernate plugin which is license
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin
@@ -74,6 +81,21 @@ Also this plugin is an addition to Jboss Tools Hibernate plugin which is license
 
    <plugin
          id="org.jboss.tools.hibernate.search.runtime.v_5_5.1"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.jboss.tools.hibernate.search.runtime.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jboss.tools.hibernate.search.runtime.v_5_7"
          download-size="0"
          install-size="0"
          version="0.0.0"

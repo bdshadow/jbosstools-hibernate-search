@@ -45,7 +45,7 @@ public class SearchTabBuilder extends AbstractTabBuilder {
 		container.setLayout(new GridLayout());
 		
 		Composite entitiesContainer = new Composite(container, SWT.TOP);
-		GridData entitiesGridData = new GridData(GridData.FILL, GridData.VERTICAL_ALIGN_BEGINNING, true, false);
+		GridData entitiesGridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
 		entitiesContainer.setLayoutData(entitiesGridData);
 		createEntityCombo(entitiesContainer, consoleConfig);
 		entitiesContainer.pack();
@@ -87,7 +87,7 @@ public class SearchTabBuilder extends AbstractTabBuilder {
 
 		this.resultTable = new SearchResultTable(container, consoleConfig);
 		
-		container.pack();
+		//container.pack();
 		container.update();
 		return container;
 	}

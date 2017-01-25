@@ -34,8 +34,7 @@ public class IndexToolkitView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, true));
-		this.consoleConfigCombo = new ConfigurationCombo(initialConsoleConfig == null ? null : initialConsoleConfig.getName(), "Toolkit.ConsoleConfigCombo");
-		this.consoleConfigCombo.fill(parent);
+		this.consoleConfigCombo = new ConfigurationCombo(parent, initialConsoleConfig == null ? null : initialConsoleConfig.getName());
 		
 		final CTabFolder folder = new CTabFolder(parent, SWT.TOP);
 		folder.setLayoutData(new GridData(GridData.FILL, SWT.FILL, true, true));

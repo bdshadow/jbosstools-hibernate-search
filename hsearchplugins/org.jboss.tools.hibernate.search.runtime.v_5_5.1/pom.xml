@@ -10,7 +10,7 @@
   </parent>
   
   <properties>
-		<hibernate.search.version>5.5.2.Final</hibernate.search.version>
+		<hibernate.search.version>5.5.5.Final</hibernate.search.version>
 		<lucene.version>5.3.1</lucene.version>
 		<coverage.filter>org.jboss.tools.hibernate.proxy*</coverage.filter>
 		<emma.instrument.bundles>org.jboss.tools.hibernate.proxy</emma.instrument.bundles>

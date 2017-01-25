@@ -27,7 +27,7 @@ public class SearchResultTable {
 	
 	public SearchResultTable(Composite parent, ConsoleConfiguration consoleConfig) {
 		this.parentComposite = parent;
-		this.resultViewer = new TableViewer(parent, SWT.MULTI | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		this.resultViewer = new TableViewer(parent, SWT.MULTI | SWT.BORDER);
 		this.resultViewer.getTable().setVisible(false);
 		this.classloader = ConsoleConfigurationUtils.getClassLoader(consoleConfig);
 	}
@@ -39,8 +39,8 @@ public class SearchResultTable {
 		if (!results.isEmpty()) {
 			addResults(results);
 		}
-		this.parentComposite.pack();
-		this.parentComposite.update();
+		this.resultViewer.getTable().pack();
+		this.resultViewer.getTable().update();
 		this.resultViewer.getTable().setVisible(true);
 	}
 	
@@ -68,8 +68,9 @@ public class SearchResultTable {
 		List<String> allColumnsIncludingId = new ArrayList<String>(classMeta.getPropertyNames().length + 1);
 		allColumnsIncludingId.add(classMeta.getIdentifierPropertyName());
 		Collections.addAll(allColumnsIncludingId, classMeta.getPropertyNames());
+		int columnSize = (int)(0.75 * this.parentComposite.getSize().x) / classMeta.getPropertyNames().length;
 		for (String property: allColumnsIncludingId) {
-			TableViewerColumn column = createSingleColumn(property);
+			TableViewerColumn column = createSingleColumn(property, columnSize);
 			column.setLabelProvider(new ColumnLabelProvider() {
 				@Override
 				public String getText(Object result) {
@@ -87,11 +88,11 @@ public class SearchResultTable {
 		}
 	}
 	
-	protected TableViewerColumn createSingleColumn(String title) {
+	protected TableViewerColumn createSingleColumn(String title, int width) {
 		TableViewerColumn viewerColumn = new TableViewerColumn(this.resultViewer, SWT.NONE);
 		TableColumn column = viewerColumn.getColumn();
 		column.setText(title);
-		column.setWidth(150);
+		column.setWidth(width);
 		column.setResizable(true);
 		return viewerColumn;
 	}

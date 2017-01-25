@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.jboss.tools</groupId>
 		<artifactId>parent</artifactId>
-		<version>4.4.0.Alpha1-SNAPSHOT</version>
+		<version>4.4.2.Final-SNAPSHOT</version>
 	</parent>
 	<artifactId>hibernatesearchtools</artifactId>
 	<name>jbosstools-hibernate-search</name>
@@ -18,7 +18,7 @@
 	<modules>
 		<module>hsearchfeatures</module>
 		<module>hsearchplugins</module>
-		<module>hsearchtests</module>
+		
 		<module>hsearchsite</module>
 	</modules>
 

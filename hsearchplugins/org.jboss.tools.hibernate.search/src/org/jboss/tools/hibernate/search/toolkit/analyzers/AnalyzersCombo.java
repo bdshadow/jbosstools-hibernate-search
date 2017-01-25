@@ -17,6 +17,7 @@ import org.hibernate.eclipse.console.HibernateConsolePlugin;
 import org.hibernate.eclipse.console.utils.LaunchHelper;
 import org.hibernate.eclipse.console.utils.ProjectUtils;
 import org.hibernate.eclipse.launch.IConsoleConfigurationLaunchConstants;
+import org.jboss.tools.hibernate.search.HibernateSearchConsolePlugin;
 
 public class AnalyzersCombo {
 	
@@ -38,7 +39,7 @@ public class AnalyzersCombo {
 			ILaunchConfiguration launchConfiguration = LaunchHelper.findHibernateLaunchConfig(this.consoleConfigName);
 			projName = launchConfiguration.getAttribute(IConsoleConfigurationLaunchConstants.PROJECT_NAME, ""); //$NON-NLS-1$
 		} catch (CoreException e) {
-			HibernateConsolePlugin.getDefault().log(e);
+			HibernateSearchConsolePlugin.getDefault().log(e);
 		}
 		IJavaProject project = ProjectUtils.findJavaProject(projName);
 		final IType analyzersType = ProjectUtils.findType(project, "org.apache.lucene.analysis.Analyzer");

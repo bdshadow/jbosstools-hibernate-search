@@ -29,7 +29,10 @@
 	                        <or>
 			                     <and>
 				                     <adapt type="org.eclipse.jface.viewers.ITreeSelection">
-								         <test property="org.jboss.tools.hibernate.search.isSameConfig" value="true"/>
+								         <test
+                       forcePluginActivation="true"
+                       property="org.jboss.tools.hibernate.search.isSameConfig"
+                       value="true"/>
 								     </adapt>
 								     <iterate
 			                              ifEmpty="false">

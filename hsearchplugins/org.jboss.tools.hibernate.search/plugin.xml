@@ -4,7 +4,6 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.jboss.tools.hibernate.search.handler.IndexRebuildHandler"
             id="org.jboss.tools.hibernate.search.actions.indexrebuild"
             name="IndexRebuildAction">
       </command>
@@ -23,33 +22,19 @@
                commandId="org.jboss.tools.hibernate.search.actions.indexrebuild"
                label="Index Rebuild"
                style="push">
-               <visibleWhen>
-	                  <with
-	                        variable="selection">
-	                        <or>
-			                     <and>
-				                     <adapt type="org.eclipse.jface.viewers.ITreeSelection">
-								         <test
-                       forcePluginActivation="true"
-                       property="org.jboss.tools.hibernate.search.isSameConfig"
-                       value="true"/>
-								     </adapt>
-								     <iterate
-			                              ifEmpty="false">
-			                           <instanceof
-			                                 value="org.jboss.tools.hibernate.runtime.spi.IPersistentClass">
-			                           </instanceof>
-			                        </iterate>
-								 </and>
-		                        <iterate 
-		                        	  ifEmpty="false">
-		                           <instanceof
-		                                 value="org.hibernate.console.ConsoleConfiguration">
-		                           </instanceof>
-		                        </iterate>
-	                     	</or>
-	                  </with>
-               </visibleWhen>
+            <visibleWhen>
+               <with
+                     variable="selection">
+                  <adapt
+                        type="org.eclipse.jface.viewers.ITreeSelection">
+                     <test
+                           forcePluginActivation="true"
+                           property="org.jboss.tools.hibernate.search.hibernateSearchEnabled"
+                           value="true">
+                     </test>
+                  </adapt>
+               </with>
+            </visibleWhen>
          </command>
          <command
                commandId="org.jboss.tools.hibernate.search.toolkit.IndexToolkitViewLaunchHandler"
@@ -58,20 +43,32 @@
             <visibleWhen>
                <with
                      variable="selection">
-                     <count value="1"/>
-	                  <iterate
-	                           ifEmpty="false">
-	                        <instanceof
-	                              value="org.hibernate.console.ConsoleConfiguration">
-	                        </instanceof>
-	                     </iterate>
+                   <and>
+                      <count
+                            value="1">
+                      </count>
+                      <iterate
+                            ifEmpty="false">
+                         <instanceof
+                               value="org.hibernate.console.ConsoleConfiguration">
+                         </instanceof>
+                      </iterate>
+                      <adapt
+                            type="org.eclipse.jface.viewers.ITreeSelection">
+                         <test
+                               forcePluginActivation="true"
+                               property="org.jboss.tools.hibernate.search.hibernateSearchEnabled"
+                               value="true">
+                         </test>
+                      </adapt>
+                   </and>
                </with>
             </visibleWhen>
          </command>
       </menuContribution>
    </extension>
    <extension
-         point="org.eclipse.ui.views">iew>
+         point="org.eclipse.ui.views">
       <view
             category="hibernatecategory"
             class="org.jboss.tools.hibernate.search.toolkit.IndexToolkitView"
@@ -83,11 +80,51 @@
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
-            class="org.jboss.tools.hibernate.search.OneParentConfigPropertyTester"
-            id="org.jboss.tools.hibernate.search.OneParentConfigPropertyTester"
+            class="org.jboss.tools.hibernate.search.property.testers.OneParentConfigPropertyTester"
+            id="org.jboss.tools.hibernate.search.property.testers.OneParentConfigPropertyTester"
             namespace="org.jboss.tools.hibernate.search"
             properties="isSameConfig"
             type="org.eclipse.jface.viewers.ITreeSelection">
       </propertyTester>
+      <propertyTester
+            class="org.jboss.tools.hibernate.search.property.testers.HibernateSearchEnabledPropertyTester"
+            id="org.jboss.tools.hibernate.search.property.testers.HibernateSearchEnabledPropertyTester"
+            namespace="org.jboss.tools.hibernate.search"
+            properties="hibernateSearchEnabled"
+            type="org.eclipse.jface.viewers.ITreeSelection">
+      </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.jboss.tools.hibernate.search.handler.IndexRebuildHandler"
+            commandId="org.jboss.tools.hibernate.search.actions.indexrebuild">
+         <enabledWhen>
+         	<with variable="selection">
+                    <or>
+	                     <and>
+		                     <adapt type="org.eclipse.jface.viewers.ITreeSelection">
+						         <test
+						               forcePluginActivation="true"
+						               property="org.jboss.tools.hibernate.search.isSameConfig"
+						               value="true"/>
+						     </adapt>
+						     <iterate
+	                              ifEmpty="false">
+	                           <instanceof
+	                                 value="org.jboss.tools.hibernate.runtime.spi.IPersistentClass">
+	                           </instanceof>
+	                        </iterate>
+						 </and>
+                        <iterate 
+                        	  ifEmpty="false">
+                           <instanceof
+                                 value="org.hibernate.console.ConsoleConfiguration">
+                           </instanceof>
+                        </iterate>
+                 	</or>
+              </with>
+         </enabledWhen>
+      </handler>
    </extension>
 </plugin>

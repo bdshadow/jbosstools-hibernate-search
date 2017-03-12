@@ -1,4 +1,4 @@
-package org.jboss.tools.hibernate.search;
+package org.jboss.tools.hibernate.search.property.testers;
 
 import java.util.HashSet;
 import java.util.Set;
